@@ -1,0 +1,26 @@
+{
+    "dimensions": {
+        "width": 8,
+        "length": 10
+    },
+    "viewQuality": {
+        "north": "OPEN_AREA",
+        "west": "NO_VIEW",
+        "south": "OPEN_AREA",
+        "east": "LANDSCAPE"
+    },
+    "apartments": [
+        {
+            "rooms": [
+                {
+                    "roomType": "BEDROOM",
+                    "minArea": 20
+                },
+                {
+                    "roomType": "BATHROOM",
+                    "minArea": 10
+                }
+            ]
+        }
+    ]
+}
