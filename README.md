@@ -44,9 +44,8 @@
     },
     "apartment": {
       "type": "object",
-      "required": ["count", "rooms"],
+      "required": ["rooms"],
       "properties": {
-        "count": { "type": "number" },
         "rooms": {
           "type": "array",
           "items": { "$ref": "#/definitions/room" },
@@ -72,7 +71,7 @@
     },
     "room": {
       "type": "object",
-      "required": ["type", "count", "minArea"],
+      "required": ["type", "minArea"],
       "properties": {
         "type": {
           "type": "string",
@@ -87,11 +86,13 @@
             "Sun Room"
           ]
         },
-        "count": { "type": "number" },
         "minArea": { "type": "number" },
         "width": { "type": "number" },
         "length": { "type": "number" },
-        "adjacentTo": { "type": "number" }
+        "adjacentTo": { 
+          "type": "array",
+          "items": { "type": "number" }
+        }
       }
     }
   }
@@ -102,17 +103,15 @@ The following, explains what each attribute represents:
 
 - `dimensions`: The dimensions of the floor in meters
 - `viewQuality`: The view quality of each of the floor sides (e.g. north view and south view). Each floor side can have one of three values, which are No View, Open Area and Landscape, where Landscape is the best possible view.
-- `apartments`: An array of the apartment types that exist in the floor, for each apartment type the following is needed:
-  - `count`: How many instances of this apartment type exist in the floor.
-  - `rooms`: An array of different room types that exist in the apartment.
+- `apartments`: An array of the apartments that exist in the floor, for each apartment the following is needed:
+  - `rooms`: An array of different rooms that exist in the apartment.
   - `roomSpacings`: An array of soft constraints on different rooms inside the apartment. Each constraint is encoded as 4-tuple of the following format (First room index, Second room index, lt or gt, some distance d), which means that the distance between the first room type and the second room type should be less than (or greater than) that distance d.
-- `room`: The room object is used inside the apartment to hold all the needed info of a room type. The following attributes are stored for each room:
+- `room`: The room object is used inside the apartment to hold all the needed info of a room. The following attributes are stored for each room:
   - `type`: The type of the room (e.g. Bedroom or Kitchen ).
-  - `count`: How many instances of this room type exist in the apartment.
   - `minArea`: The minimum area of the room in square meters.
   - `width`: Preferred width of the room in meters.
   - `length`: Preferred length of the room in meters.
-  - `adjacentTo`: An index of a room type, which this room type must be adjacent to.
+  - `adjacentTo`: A list of indices of rooms, which this room must be adjacent to.
 - `numberOfElevators`: The number of elevators in the floor, the default is one.
 - `numberOfStairs`: The number of stairs in the floor, the default is one.
 - `numberOfDucts`: The number of ducts in the floor, the default is one.
@@ -133,16 +132,13 @@ The following, explains what each attribute represents:
   },
   "apartments": [
     {
-      "count": 2,
       "rooms": [
         {
           "type": "Bedroom",
-          "count": 1,
           "minArea": 20
         },
         {
           "type": "Bathroom",
-          "count": 1,
           "minArea": 10
         }
       ]

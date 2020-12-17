@@ -73,13 +73,9 @@
         "apartment": {
             "type": "object",
             "required": [
-                "count",
                 "rooms"
             ],
             "properties": {
-                "count": {
-                    "type": "number"
-                },
                 "rooms": {
                     "type": "array",
                     "items": {
@@ -118,7 +114,6 @@
             "type": "object",
             "required": [
                 "type",
-                "count",
                 "minArea"
             ],
             "properties": {
@@ -135,9 +130,6 @@
                         "Sun Room"
                     ]
                 },
-                "count": {
-                    "type": "number"
-                },
                 "minArea": {
                     "type": "number"
                 },
@@ -148,7 +140,10 @@
                     "type": "number"
                 },
                 "adjacentTo": {
-                    "type": "number"
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
                 }
             }
         }
