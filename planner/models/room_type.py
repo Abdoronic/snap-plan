@@ -1,6 +1,6 @@
 import enum
 
-class RoomTypes(enum.Enum):
+class RoomType(enum.Enum):
    BEDROOM = 1
    DRESSING_ROOM = 2
    MASTER_BATHROOM = 3

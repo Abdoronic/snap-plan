@@ -40,7 +40,7 @@
   "definitions": {
     "view": {
       "type": "string",
-      "enum": ["No View", "Open Area", "Landscape"]
+      "enum": ["NO_VIEW", "OPEN_AREA", "LANDSCAPE"]
     },
     "apartment": {
       "type": "object",
@@ -71,19 +71,19 @@
     },
     "room": {
       "type": "object",
-      "required": ["type", "minArea"],
+      "required": ["roomType", "minArea"],
       "properties": {
-        "type": {
+        "roomType": {
           "type": "string",
           "enum": [
-            "Bedroom",
-            "Dressing Room",
-            "Master Bathroom",
-            "Bathroom",
-            "Kitchen",
-            "Dining Room",
-            "Living Room",
-            "Sun Room"
+            "BEDROOM",
+            "DRESSING_ROOM",
+            "MASTER_BATHROOM",
+            "BATHROOM",
+            "KITCHEN",
+            "DINING_ROOM",
+            "LIVING_ROOM",
+            "SUN_ROOM"
           ]
         },
         "minArea": { "type": "number" },
@@ -107,7 +107,7 @@ The following, explains what each attribute represents:
   - `rooms`: An array of different rooms that exist in the apartment.
   - `roomSpacings`: An array of soft constraints on different rooms inside the apartment. Each constraint is encoded as 4-tuple of the following format (First room index, Second room index, lt or gt, some distance d), which means that the distance between the first room type and the second room type should be less than (or greater than) that distance d.
 - `room`: The room object is used inside the apartment to hold all the needed info of a room. The following attributes are stored for each room:
-  - `type`: The type of the room (e.g. Bedroom or Kitchen ).
+  - `roomType`: The type of the room (e.g. Bedroom or Kitchen ).
   - `minArea`: The minimum area of the room in square meters.
   - `width`: Preferred width of the room in meters.
   - `length`: Preferred length of the room in meters.
@@ -125,20 +125,20 @@ The following, explains what each attribute represents:
     "length": 10
   },
   "viewQuality": {
-    "north": "Open Area",
-    "west": "No View",
-    "south": "Open Area",
-    "east": "Landscape"
+    "north": "OPEN_AREA",
+    "west": "NO_VIEW",
+    "south": "OPEN_AREA",
+    "east": "LANDSCAPE"
   },
   "apartments": [
     {
       "rooms": [
         {
-          "type": "Bedroom",
+          "roomType": "BEDROOM",
           "minArea": 20
         },
         {
-          "type": "Bathroom",
+          "roomType": "BATHROOM",
           "minArea": 10
         }
       ]

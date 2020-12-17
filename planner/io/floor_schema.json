@@ -65,9 +65,9 @@
         "view": {
             "type": "string",
             "enum": [
-                "No View",
-                "Open Area",
-                "Landscape"
+                "NO_VIEW",
+                "OPEN_AREA",
+                "LANDSCAPE"
             ]
         },
         "apartment": {
@@ -113,21 +113,21 @@
         "room": {
             "type": "object",
             "required": [
-                "type",
+                "roomType",
                 "minArea"
             ],
             "properties": {
-                "type": {
+                "room_type": {
                     "type": "string",
                     "enum": [
-                        "Bedroom",
-                        "Dressing Room",
-                        "Master Bathroom",
-                        "Bathroom",
-                        "Kitchen",
-                        "Dining Room",
-                        "Living Room",
-                        "Sun Room"
+                        "BEDROOM",
+                        "DRESSING_ROOM",
+                        "MASTER_BATHROOM",
+                        "BATHROOM",
+                        "KITCHEN",
+                        "DINING_ROOM",
+                        "LIVING_ROOM",
+                        "SUN_ROOM"
                     ]
                 },
                 "minArea": {
