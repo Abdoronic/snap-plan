@@ -1,6 +1,3 @@
-from planner.models.apartment import Apartment
-
-
 class Floor:
     def __init__(self, width, length, sides_views, apartments):
         """
@@ -24,14 +21,10 @@ class Floor:
         self.length = length
         self.sides_views = sides_views
         self.apartments = apartments
-
-
-    @property
-    def rooms(self):
-        rooms = []
+        self.rooms = []
         for apartment in self.apartments:
-            rooms.append(apartment.rooms)
-        return rooms
+            self.rooms.append(apartment.rooms)
+
 
     def __str__(self):
         floor_repr = f'Floor(width={self.width}, length={self.length}, sides_views={self.sides_views},\n'
