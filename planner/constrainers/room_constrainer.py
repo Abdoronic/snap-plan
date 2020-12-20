@@ -15,7 +15,7 @@ def enforce_rooms_be_adjacent(a, b, model):
 
     possible_adjacencies = []
 
-    for i, corner in enumerate(get_room_corners):
+    for i, corner in enumerate(a_corners):
         # j is 1 if corner is nw or ne and 0 if corner is sw or se
         j = 1 - i//2
         possible_adjacencies.append(
@@ -24,7 +24,7 @@ def enforce_rooms_be_adjacent(a, b, model):
         # k is 3 if corner is nw or sw and 2 if corner is ne or se
         k = 3 - i % 2
         possible_adjacencies.append(is_sandwiched(
-            corner, b_sides[k], 0, model))
+            corner, b_sides[k], 1, model))
 
     are_adjacent = or_reify(possible_adjacencies, model)
     model.Add(are_adjacent == 1)
@@ -75,7 +75,7 @@ def is_between(start, in_between, end, model):
 
 
 def is_sandwiched(sandwiched, side, direction, model):
-    """ Assumes end is on same vertical line as start. 0 is horizontal, 1 is vertical for direction
+    """ Assumes end is on same horizontal or vertical line as start. 0 is horizontal, 1 is vertical for direction
     """
 
     start, end = side
