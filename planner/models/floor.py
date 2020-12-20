@@ -23,7 +23,7 @@ class Floor:
         self.apartments = apartments
         self.rooms = []
         for apartment in self.apartments:
-            self.rooms.append(apartment.rooms)
+            self.rooms.extend(apartment.rooms)
 
 
     def __str__(self):
