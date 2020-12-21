@@ -13,6 +13,12 @@ def constraint_room_area(room, floor, model):
     model.Add(xe - xs == width_var)
     model.Add(ye - ys == length_var)
 
+    if room.has_preferred_width():
+        model.Add(width_var == room.width)
+    
+    if room.has_preferred_length():
+        model.Add(length_var == room.length)
+
     area = model.NewIntVar(0, floor.width * floor.length, str(uuid.uuid4()))
     model.AddMultiplicationEquality(area, [width_var, length_var])
 
