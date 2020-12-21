@@ -1,5 +1,16 @@
+from planner.constrainers.room_constrainer import constrain_room
+from planner.constrainers.apartment_constrainer import constrain_apartment
+
+
 def constrain_floor(floor, model):
     no_overlap(floor, model)
+
+    for apartment in floor.apartments:
+        constrain_apartment(apartment, floor, model)
+
+    for room in floor.rooms:
+        constrain_room(room, floor, model)
+
 
 def no_overlap(floor, model):
     x_intervals = []
@@ -22,5 +33,5 @@ def no_overlap(floor, model):
         y_intervals.append(
             model.NewIntervalVar(ys, yd, ye, room_name + '_y_interval')
         )
-    
+
     model.AddNoOverlap2D(x_intervals, y_intervals)

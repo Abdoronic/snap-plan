@@ -1,8 +1,22 @@
 import uuid
 
 
-def constrain_room(room, model):
-    pass
+def constrain_room(room, floor, model):
+    constraint_room_area(room, floor, model)
+
+
+def constraint_room_area(room, floor, model):
+    (xs, xe, ys, ye) = room.variables
+
+    width_var = model.NewIntVar(0, floor.width, str(uuid.uuid4()))
+    length_var = model.NewIntVar(0, floor.length, str(uuid.uuid4()))
+    model.Add(xe - xs == width_var)
+    model.Add(ye - ys == length_var)
+
+    area = model.NewIntVar(0, floor.width * floor.length, str(uuid.uuid4()))
+    model.AddMultiplicationEquality(area, [width_var, length_var])
+
+    model.Add(area >= room.min_area)
 
 
 def enforce_rooms_be_adjacent(a, b, model):

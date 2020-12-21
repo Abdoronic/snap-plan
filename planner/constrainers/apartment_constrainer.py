@@ -1,2 +1,2 @@
-def constrain_apartment(apartment, model):
+def constrain_apartment(apartment, floor, model):
     pass
