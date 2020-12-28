@@ -15,7 +15,7 @@ def constraint_room_area(room, floor, model):
 
     if room.has_preferred_width():
         model.Add(width_var == room.width)
-    
+
     if room.has_preferred_length():
         model.Add(length_var == room.length)
 
@@ -37,14 +37,16 @@ def enforce_rooms_be_adjacent(a, b, model):
 
     for i, corner in enumerate(a_corners):
         # j is 1 if corner is nw or ne and 0 if corner is sw or se
-        j = 1 - i//2
+        j = 1 - i // 2
         possible_adjacencies.append(
-            is_sandwiched(corner, b_sides[j], 0, model))
+            is_sandwiched(corner, b_sides[j], 0, model)
+        )
 
         # k is 3 if corner is nw or sw and 2 if corner is ne or se
         k = 3 - i % 2
-        possible_adjacencies.append(is_sandwiched(
-            corner, b_sides[k], 1, model))
+        possible_adjacencies.append(
+            is_sandwiched(corner, b_sides[k], 1, model)
+        )
 
     are_adjacent = or_reify(possible_adjacencies, model)
     model.Add(are_adjacent == 1)
@@ -52,12 +54,10 @@ def enforce_rooms_be_adjacent(a, b, model):
 
 def get_room_corners(room):
     x_start, x_end, y_start, y_end = room.variables
-
     nw = (x_start, y_start)
     ne = (x_end, y_start)
     sw = (x_start, y_end)
     se = (x_end, y_end)
-
     return nw, ne, sw, se
 
 
@@ -67,7 +67,6 @@ def get_room_sides(room):
     s = (sw, se)
     w = (nw, sw)
     e = (ne, se)
-
     return n, s, w, e
 
 
@@ -75,23 +74,19 @@ def is_between(start, in_between, end, model):
     """Inclusive, one-sided only
     """
 
-    after_start = base_reify(in_between >= start,
-                             in_between < start, model)
+    after_start = base_reify(
+        in_between > start,
+        in_between <= start,
+        model
+    )
 
-    before_end = base_reify(in_between <= end,
-                            in_between > end, model)
+    before_end = base_reify(
+        in_between < end,
+        in_between >= end,
+        model
+    )
 
-    is_after_start_and_before_end = and_reify(after_start, before_end, model)
-
-    is_not_start = base_reify(start != in_between,
-                              start == in_between, model)
-
-    is_not_end = base_reify(end != in_between,
-                            end == in_between, model)
-
-    is_not_start_or_end = or_reify(is_not_start, is_not_end, model)
-
-    return and_reify(is_after_start_and_before_end, is_not_start_or_end, model)
+    return and_reify([after_start, before_end], model)
 
 
 def is_sandwiched(sandwiched, side, direction, model):
@@ -101,18 +96,27 @@ def is_sandwiched(sandwiched, side, direction, model):
     start, end = side
 
     other_direction = 1 - direction
-    are_aligned = base_reify(start[other_direction] == sandwiched[other_direction],
-                             start[other_direction] != sandwiched[other_direction],
-                             model)
+    are_aligned = base_reify(
+        start[other_direction] == sandwiched[other_direction],
+        start[other_direction] != sandwiched[other_direction],
+        model
+    )
 
     is_between_in_direction = is_between(
-        start[direction], sandwiched[direction], end[direction], model)
+        start[direction],
+        sandwiched[direction],
+        end[direction],
+        model
+    )
 
-    return and_reify(are_aligned, is_between_in_direction, model)
+    return and_reify(
+        [are_aligned, is_between_in_direction],
+        model
+    )
 
 
 def base_reify(condition, not_condition, model):
-    b = model.NewBoolVar(uuid.uuid4())
+    b = model.NewBoolVar(str(uuid.uuid4()))
 
     # Implement b == condition.
     model.Add(condition).OnlyEnforceIf(b)
@@ -122,38 +126,46 @@ def base_reify(condition, not_condition, model):
 
 
 def not_reify(a_var, model):
-    return base_reify(a_var == 0,
-                      a_var != 0,
-                      model)
+    return base_reify(
+        a_var == 0,
+        a_var != 0,
+        model
+    )
 
 
 def sum_vars(var_list):
-    sum = 0
+    var_sum = 0
     for var in var_list:
-        sum += var
-    return sum
+        var_sum += var
+    return var_sum
 
 
 def and_reify(var_list, model):
-    sum = sum_vars(var_list)
-    len = len(var_list)
-    return base_reify(sum == len,
-                      sum != len,
-                      model)
+    var_sum = sum_vars(var_list)
+    var_len = len(var_list)
+    return base_reify(
+        var_sum == var_len,
+        var_sum != var_len,
+        model
+    )
 
 
 def or_reify(var_list, model):
-    sum = sum_vars(var_list)
-    return base_reify(sum >= 1,
-                      sum < 1,
-                      model)
+    var_sum = sum_vars(var_list)
+    return base_reify(
+        var_sum >= 1,
+        var_sum < 1,
+        model
+    )
 
 
 def xor_reify(var_list, model):
-    sum = sum_vars(var_list)
-    return base_reify(sum == 1,
-                      sum != 1,
-                      model)
+    var_sum = sum_vars(var_list)
+    return base_reify(
+        var_sum == 1,
+        var_sum != 1,
+        model
+    )
 
 
 def add_if_then_else(unique_name, if_condition, else_condition, then_constraint, else_constraint, model):
