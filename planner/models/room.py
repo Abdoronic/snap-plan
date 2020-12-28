@@ -26,6 +26,7 @@ class Room:
         self.length = length
         self.adjacent_to = adjacent_to
         self.variables = None
+        self.area_variable = None
 
     def has_preferred_width(self):
         """ Check if a preferred width was specified """
