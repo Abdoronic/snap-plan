@@ -24,7 +24,7 @@ class Floor:
         self.rooms = []
         for apartment in self.apartments:
             self.rooms.extend(apartment.rooms)
-
+        self.score_variable = None
 
     def __str__(self):
         floor_repr = f'Floor(width={self.width}, length={self.length}, sides_views={self.sides_views},\n'
