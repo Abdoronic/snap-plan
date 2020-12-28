@@ -62,7 +62,7 @@ def parse_room(room_json):
 
     adjacent_to = []
     if 'adjacentTo' in room_json:
-        adjacent_to = room_json['adjacent_to']
+        adjacent_to = room_json['adjacentTo']
 
     return Room(room_type, min_area, width, length, adjacent_to)
 
