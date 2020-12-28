@@ -1,6 +1,7 @@
 from ortools.sat.python import cp_model
 from planner.constrainers.floor_constrainer import constrain_floor
 from planner.constrainers.objective_function import add_objective_function
+from planner.solution_handler import SolutionHandler
 
 
 def plan_floor(floor):
@@ -18,10 +19,7 @@ def plan_floor(floor):
     model.Add(floor.score_variable == round(solver.ObjectiveValue()))
     model.Proto().ClearField('objective')
 
-    solver.SearchForAllSolutions(
-        model,
-        cp_model.VarArraySolutionPrinter([floor.score_variable])
-    )
+    solver.SearchForAllSolutions(model, SolutionHandler(floor))
 
     return status, solver
 
