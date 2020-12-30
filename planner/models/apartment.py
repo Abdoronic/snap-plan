@@ -1,5 +1,10 @@
+from planner.models.room import Room
+
+from typing import List
+
+
 class Apartment:
-    def __init__(self, rooms):
+    def __init__(self, rooms: List[Room]):
         """
         Parameters
         ----------

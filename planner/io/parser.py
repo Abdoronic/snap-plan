@@ -1,3 +1,8 @@
+from planner.models.room_type import RoomType
+from planner.models.view import View
+from planner.models.room import Room
+from planner.models.apartment import Apartment
+from planner.models.floor import Floor
 from jsonschema import validate
 import json
 import sys
@@ -6,12 +11,6 @@ import os
 script_dir = os.path.dirname(__file__)
 planner_path = os.path.join(script_dir, "../..")
 sys.path.append(os.path.abspath(planner_path))
-
-from planner.models.floor import Floor
-from planner.models.apartment import Apartment
-from planner.models.room import Room
-from planner.models.view import View
-from planner.models.room_type import RoomType
 
 
 def parse_floor(path):
@@ -29,9 +28,9 @@ def json_to_floor(floor_json):
     width = floor_json['dimensions']['width']
     length = floor_json['dimensions']['length']
     sides_views = tuple(map(parse_view,
-                      tuple([floor_json['viewQuality'][key]
-                             for key in ['north', 'south', 'east', 'west']])
-    ))
+                            tuple([floor_json['viewQuality'][key]
+                                   for key in ['north', 'south', 'east', 'west']])
+                            ))
 
     apartments_json = floor_json['apartments']
     apartments = [*map(parse_apartment, apartments_json)]
@@ -52,19 +51,19 @@ def parse_room(room_json):
     room_type = parse_room_type(room_json['roomType'])
     min_area = room_json['minArea']
 
-    width = None
+    preferred_width = None
     if 'width' in room_json:
-        width = room_json['width']
+        preferred_width = room_json['width']
 
-    length = None
+    preferred_length = None
     if 'length' in room_json:
-        length = room_json['length']
+        preferred_length = room_json['length']
 
     adjacent_to = []
     if 'adjacentTo' in room_json:
-        adjacent_to = room_json['adjacent_to']
+        adjacent_to = room_json['adjacentTo']
 
-    return Room(room_type, min_area, width, length, adjacent_to)
+    return Room(room_type, min_area, preferred_width, preferred_length, adjacent_to)
 
 
 def parse_room_type(room_type_string):
