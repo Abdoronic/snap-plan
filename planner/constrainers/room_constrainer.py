@@ -13,20 +13,23 @@ def constrain_room(room: Room, floor: Floor, model: cp_model.CpModel):
 def constraint_room_area(room: Room, floor: Floor, model: cp_model.CpModel):
     (xs, xe, ys, ye) = room.variables
 
-    width_var = model.NewIntVar(0, floor.width, '')
-    length_var = model.NewIntVar(0, floor.length, '')
-    model.Add(xe - xs == width_var)
-    model.Add(ye - ys == length_var)
+    width = room.width_variable
+    length = room.length_variable
+
+    model.Add(xs < xe)
+    model.Add(ys < ye)
+    model.Add(xe - xs == width)
+    model.Add(ye - ys == length)
 
     if room.has_preferred_width():
-        model.Add(width_var == room.width)
+        model.Add(width == room.preferred_width)
 
     if room.has_preferred_length():
-        model.Add(length_var == room.length)
+        model.Add(length == room.preferred_length)
 
     area = room.area_variable
 
-    model.AddMultiplicationEquality(area, [width_var, length_var])
+    model.AddMultiplicationEquality(area, [width, length])
 
     model.Add(area >= room.min_area)
 

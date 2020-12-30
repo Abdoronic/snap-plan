@@ -51,19 +51,19 @@ def parse_room(room_json):
     room_type = parse_room_type(room_json['roomType'])
     min_area = room_json['minArea']
 
-    width = None
+    preferred_width = None
     if 'width' in room_json:
-        width = room_json['width']
+        preferred_width = room_json['width']
 
-    length = None
+    preferred_length = None
     if 'length' in room_json:
-        length = room_json['length']
+        preferred_length = room_json['length']
 
     adjacent_to = []
     if 'adjacentTo' in room_json:
         adjacent_to = room_json['adjacentTo']
 
-    return Room(room_type, min_area, width, length, adjacent_to)
+    return Room(room_type, min_area, preferred_width, preferred_length, adjacent_to)
 
 
 def parse_room_type(room_type_string):
