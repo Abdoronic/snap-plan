@@ -1,5 +1,6 @@
 import uuid
-from planner.constrainers.utils import base_reify, and_reify, or_reify
+from planner.constrainers.utils import base_reify, and_reify, or_reify, eq_reify
+
 
 def constrain_room(room, floor, model):
     constraint_room_area(room, floor, model)
@@ -22,16 +23,17 @@ def constraint_room_area(room, floor, model):
     area = room.area_variable
 
     model.AddMultiplicationEquality(area, [width_var, length_var])
-    
+
     model.Add(area >= room.min_area)
 
 
 def enforce_rooms_be_adjacent(a, b, model):
 
-    #a_nw, a_ne, a_sw, a_se
+    # a_nw, a_ne, a_sw, a_se
     a_corners = get_room_corners(a)
+    b_corners = get_room_corners(b)
 
-    #b_n, b_s, b_w, b_e
+    # b_n, b_s, b_w, b_e
     b_sides = get_room_sides(b)
 
     possible_adjacencies = []
@@ -49,6 +51,7 @@ def enforce_rooms_be_adjacent(a, b, model):
             is_sandwiched(corner, b_sides[k], 1, model)
         )
 
+    add_inclusive_adjacency(possible_adjacencies, a_corners, b_corners, model)
     are_adjacent = or_reify(possible_adjacencies, model)
     model.Add(are_adjacent == 1)
 
@@ -71,8 +74,50 @@ def get_room_sides(room):
     return n, s, w, e
 
 
+def add_inclusive_adjacency(possible_adjacencies, a_corners, b_corners, model):
+    a_nw, a_ne, a_sw, a_se = a_corners
+
+    b_nw, b_ne, b_sw, b_se = b_corners
+
+    # a_nw can coincide with b_ne or b_sw
+
+    possible_adjacencies.extend(
+        [
+            eq_reify(a_nw, b_ne, model),
+            eq_reify(a_nw, b_sw, model),
+        ]
+    )
+
+    # a_ne can coincide with b_nw or b_se
+
+    possible_adjacencies.extend(
+        [
+            eq_reify(a_ne, b_nw, model),
+            eq_reify(a_ne, b_se, model),
+        ]
+    )
+
+    # a_sw can coincide with b_ne or b_sw
+
+    possible_adjacencies.extend(
+        [
+            eq_reify(a_sw, b_nw, model),
+            eq_reify(a_sw, b_se, model),
+        ]
+    )
+
+    # a_se can coincide with b_nw or b_se
+
+    possible_adjacencies.extend(
+        [
+            eq_reify(a_se, b_ne, model),
+            eq_reify(a_se, b_sw, model),
+        ]
+    )
+
+
 def is_between(start, in_between, end, model):
-    """Inclusive, one-sided only
+    """Exclusive
     """
 
     after_start = base_reify(

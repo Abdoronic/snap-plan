@@ -1,5 +1,6 @@
 import uuid
 
+
 def base_reify(condition, not_condition, model):
     b = model.NewBoolVar(str(uuid.uuid4()))
 
@@ -49,6 +50,14 @@ def xor_reify(var_list, model):
     return base_reify(
         var_sum == 1,
         var_sum != 1,
+        model
+    )
+
+
+def eq_reify(var1, var2, model):
+    return base_reify(
+        var1 == var2,
+        var2 != var2,
         model
     )
 
