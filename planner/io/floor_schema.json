@@ -1,0 +1,151 @@
+{
+    "type": "object",
+    "required": [
+        "dimensions",
+        "viewQuality",
+        "apartments"
+    ],
+    "properties": {
+        "dimensions": {
+            "type": "object",
+            "required": [
+                "width",
+                "length"
+            ],
+            "properties": {
+                "width": {
+                    "type": "number"
+                },
+                "length": {
+                    "type": "number"
+                }
+            }
+        },
+        "viewQuality": {
+            "type": "object",
+            "required": [
+                "north",
+                "west",
+                "south",
+                "east"
+            ],
+            "properties": {
+                "north": {
+                    "$ref": "#/definitions/view"
+                },
+                "west": {
+                    "$ref": "#/definitions/view"
+                },
+                "south": {
+                    "$ref": "#/definitions/view"
+                },
+                "east": {
+                    "$ref": "#/definitions/view"
+                }
+            }
+        },
+        "apartments": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/apartment"
+            },
+            "minItems": 1
+        },
+        "numberOfElevators": {
+            "type": "number"
+        },
+        "numberOfStairs": {
+            "type": "number"
+        },
+        "numberOfDucts": {
+            "type": "number"
+        }
+    },
+    "definitions": {
+        "view": {
+            "type": "string",
+            "enum": [
+                "NO_VIEW",
+                "OPEN_AREA",
+                "LANDSCAPE"
+            ]
+        },
+        "apartment": {
+            "type": "object",
+            "required": [
+                "rooms"
+            ],
+            "properties": {
+                "rooms": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/room"
+                    },
+                    "minItems": 1
+                },
+                "roomSpacings": {
+                    "type": "array",
+                    "items": {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "string",
+                                "enum": [
+                                    "lt",
+                                    "gt"
+                                ]
+                            },
+                            {
+                                "type": "number"
+                            }
+                        ]
+                    },
+                    "minItems": 1
+                }
+            }
+        },
+        "room": {
+            "type": "object",
+            "required": [
+                "roomType",
+                "minArea"
+            ],
+            "properties": {
+                "room_type": {
+                    "type": "string",
+                    "enum": [
+                        "BEDROOM",
+                        "DRESSING_ROOM",
+                        "MASTER_BATHROOM",
+                        "BATHROOM",
+                        "KITCHEN",
+                        "DINING_ROOM",
+                        "LIVING_ROOM",
+                        "SUN_ROOM"
+                    ]
+                },
+                "minArea": {
+                    "type": "number"
+                },
+                "width": {
+                    "type": "number"
+                },
+                "length": {
+                    "type": "number"
+                },
+                "adjacentTo": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                }
+            }
+        }
+    }
+}
