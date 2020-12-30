@@ -1,5 +1,5 @@
 import uuid
-from planner.constrainers.utils import base_reify, and_reify, or_reify, eq_reify
+from planner.constrainers.utils import base_reify, and_reify, or_reify, eq_tuple_reify
 
 
 def constrain_room(room, floor, model):
@@ -83,8 +83,8 @@ def add_inclusive_adjacency(possible_adjacencies, a_corners, b_corners, model):
 
     possible_adjacencies.extend(
         [
-            eq_reify(a_nw, b_ne, model),
-            eq_reify(a_nw, b_sw, model),
+            eq_tuple_reify(a_nw, b_ne, model),
+            eq_tuple_reify(a_nw, b_sw, model),
         ]
     )
 
@@ -92,8 +92,8 @@ def add_inclusive_adjacency(possible_adjacencies, a_corners, b_corners, model):
 
     possible_adjacencies.extend(
         [
-            eq_reify(a_ne, b_nw, model),
-            eq_reify(a_ne, b_se, model),
+            eq_tuple_reify(a_ne, b_nw, model),
+            eq_tuple_reify(a_ne, b_se, model),
         ]
     )
 
@@ -101,8 +101,8 @@ def add_inclusive_adjacency(possible_adjacencies, a_corners, b_corners, model):
 
     possible_adjacencies.extend(
         [
-            eq_reify(a_sw, b_nw, model),
-            eq_reify(a_sw, b_se, model),
+            eq_tuple_reify(a_sw, b_nw, model),
+            eq_tuple_reify(a_sw, b_se, model),
         ]
     )
 
@@ -110,8 +110,8 @@ def add_inclusive_adjacency(possible_adjacencies, a_corners, b_corners, model):
 
     possible_adjacencies.extend(
         [
-            eq_reify(a_se, b_ne, model),
-            eq_reify(a_se, b_sw, model),
+            eq_tuple_reify(a_se, b_ne, model),
+            eq_tuple_reify(a_se, b_sw, model),
         ]
     )
 

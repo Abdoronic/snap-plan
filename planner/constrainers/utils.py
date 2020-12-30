@@ -54,12 +54,15 @@ def xor_reify(var_list, model):
     )
 
 
-def eq_reify(var1, var2, model):
-    return base_reify(
-        var1 == var2,
-        var2 != var2,
-        model
-    )
+def eq_tuple_reify(var_tuple, other_var_tuple, model):
+    positional_equalities = [
+        base_reify(
+            var_tuple[i] == other_var_tuple[i],
+            var_tuple[i] != other_var_tuple[i],
+            model
+        ) for i in range(len(var_tuple))
+    ]
+    return and_reify(positional_equalities, model)
 
 
 def add_if_then_else(unique_name, if_condition, else_condition, then_constraint, else_constraint, model):
