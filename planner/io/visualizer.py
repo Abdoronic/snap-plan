@@ -1,7 +1,12 @@
+from ortools.sat.python import cp_model
+
 import plotly.graph_objects as go
 
+from planner.models.floor import Floor
+from planner.models.room_type import RoomType
 
-def visualize_floor(floor, solver):
+
+def visualize_floor(floor: Floor, solver: cp_model.CpSolver):
     fig = go.Figure()
 
     fig.update_xaxes(range=[0, floor.width])
@@ -49,5 +54,6 @@ def visualize_floor(floor, solver):
 
     fig.show()
 
-def get_room_colors(room_type):
+
+def get_room_colors(room_type: RoomType):
     return 'PaleTurquoise', 'LightSeaGreen'
