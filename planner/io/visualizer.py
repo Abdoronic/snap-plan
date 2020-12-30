@@ -20,7 +20,9 @@ def visualize_floor(floor: Floor, solver: cp_model.CpSolver):
         yaxis=dict(
             tickmode='linear',
             tick0=0,
-            dtick=1
+            dtick=1,
+            scaleanchor="x",
+            scaleratio=1
         )
     )
 
