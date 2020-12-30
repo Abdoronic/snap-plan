@@ -1,16 +1,20 @@
-import uuid
+from ortools.sat.python import cp_model
+
+from planner.models.floor import Floor
+from planner.models.room import Room
+from planner.models.room_type import RoomType
 from planner.constrainers.utils import base_reify, and_reify, or_reify, eq_tuple_reify
 
 
-def constrain_room(room, floor, model):
+def constrain_room(room: Room, floor: Floor, model: cp_model.CpModel):
     constraint_room_area(room, floor, model)
 
 
-def constraint_room_area(room, floor, model):
+def constraint_room_area(room: Room, floor: Floor, model: cp_model.CpModel):
     (xs, xe, ys, ye) = room.variables
 
-    width_var = model.NewIntVar(0, floor.width, str(uuid.uuid4()))
-    length_var = model.NewIntVar(0, floor.length, str(uuid.uuid4()))
+    width_var = model.NewIntVar(0, floor.width, '')
+    length_var = model.NewIntVar(0, floor.length, '')
     model.Add(xe - xs == width_var)
     model.Add(ye - ys == length_var)
 
@@ -27,7 +31,7 @@ def constraint_room_area(room, floor, model):
     model.Add(area >= room.min_area)
 
 
-def enforce_rooms_be_adjacent(a, b, model):
+def rooms_are_adjacent(a: Room, b: Room, model: cp_model.CpModel) -> cp_model.IntVar:
 
     # a_nw, a_ne, a_sw, a_se
     a_corners = get_room_corners(a)
@@ -51,12 +55,14 @@ def enforce_rooms_be_adjacent(a, b, model):
             is_sandwiched(corner, b_sides[k], 1, model)
         )
 
-    add_inclusive_adjacency(possible_adjacencies, a_corners, b_corners, model)
+    possible_adjacencies.extend(
+        get_inclusive_adjacencies(a_corners, b_corners, model)
+    )
     are_adjacent = or_reify(possible_adjacencies, model)
-    model.Add(are_adjacent == 1)
+    return are_adjacent
 
 
-def get_room_corners(room):
+def get_room_corners(room: Room) -> tuple:
     x_start, x_end, y_start, y_end = room.variables
     nw = (x_start, y_start)
     ne = (x_end, y_start)
@@ -65,7 +71,7 @@ def get_room_corners(room):
     return nw, ne, sw, se
 
 
-def get_room_sides(room):
+def get_room_sides(room: Room) -> tuple:
     nw, ne, sw, se = get_room_corners(room)
     n = (nw, ne)
     s = (sw, se)
@@ -74,14 +80,16 @@ def get_room_sides(room):
     return n, s, w, e
 
 
-def add_inclusive_adjacency(possible_adjacencies, a_corners, b_corners, model):
+def get_inclusive_adjacencies(a_corners: tuple, b_corners: tuple, model: cp_model.CpModel) -> list:
     a_nw, a_ne, a_sw, a_se = a_corners
 
     b_nw, b_ne, b_sw, b_se = b_corners
 
     # a_nw can coincide with b_ne or b_sw
 
-    possible_adjacencies.extend(
+    inclusive_adjacencies = []
+
+    inclusive_adjacencies.extend(
         [
             eq_tuple_reify(a_nw, b_ne, model),
             eq_tuple_reify(a_nw, b_sw, model),
@@ -90,33 +98,35 @@ def add_inclusive_adjacency(possible_adjacencies, a_corners, b_corners, model):
 
     # a_ne can coincide with b_nw or b_se
 
-    possible_adjacencies.extend(
+    inclusive_adjacencies.extend(
         [
             eq_tuple_reify(a_ne, b_nw, model),
             eq_tuple_reify(a_ne, b_se, model),
         ]
     )
 
-    # a_sw can coincide with b_ne or b_sw
-
-    possible_adjacencies.extend(
-        [
-            eq_tuple_reify(a_sw, b_nw, model),
-            eq_tuple_reify(a_sw, b_se, model),
-        ]
-    )
-
     # a_se can coincide with b_nw or b_se
 
-    possible_adjacencies.extend(
+    inclusive_adjacencies.extend(
         [
             eq_tuple_reify(a_se, b_ne, model),
             eq_tuple_reify(a_se, b_sw, model),
         ]
     )
 
+    # a_sw can coincide with b_ne or b_sw
 
-def is_between(start, in_between, end, model):
+    inclusive_adjacencies.extend(
+        [
+            eq_tuple_reify(a_sw, b_nw, model),
+            eq_tuple_reify(a_sw, b_se, model),
+        ]
+    )
+
+    return inclusive_adjacencies
+
+
+def is_between(start: cp_model.IntVar, in_between: cp_model.IntVar, end: cp_model.IntVar, model: cp_model.CpModel) -> cp_model.IntVar:
     """Exclusive
     """
 
@@ -135,7 +145,7 @@ def is_between(start, in_between, end, model):
     return and_reify([after_start, before_end], model)
 
 
-def is_sandwiched(sandwiched, side, direction, model):
+def is_sandwiched(sandwiched: tuple, side: tuple, direction: int, model: cp_model.CpModel) -> cp_model.IntVar:
     """ Assumes end is on same horizontal or vertical line as start. 0 is horizontal, 1 is vertical for direction
     """
 

@@ -1,8 +1,8 @@
-import uuid
+from ortools.sat.python import cp_model
 
 
-def base_reify(condition, not_condition, model):
-    b = model.NewBoolVar(str(uuid.uuid4()))
+def base_reify(condition: cp_model.Constraint, not_condition: cp_model.Constraint, model: cp_model.CpModel) -> cp_model.IntVar:
+    b = model.NewBoolVar('')
 
     # Implement b == condition.
     model.Add(condition).OnlyEnforceIf(b)
@@ -11,7 +11,7 @@ def base_reify(condition, not_condition, model):
     return b
 
 
-def not_reify(a_var, model):
+def not_reify(a_var, model: cp_model.CpModel) -> cp_model.IntVar:
     return base_reify(
         a_var == 0,
         a_var != 0,
@@ -19,15 +19,8 @@ def not_reify(a_var, model):
     )
 
 
-def sum_vars(var_list):
-    var_sum = 0
-    for var in var_list:
-        var_sum += var
-    return var_sum
-
-
-def and_reify(var_list, model):
-    var_sum = sum_vars(var_list)
+def and_reify(var_list: list, model: cp_model.CpModel) -> cp_model.IntVar:
+    var_sum = sum(var_list)
     var_len = len(var_list)
     return base_reify(
         var_sum == var_len,
@@ -36,8 +29,8 @@ def and_reify(var_list, model):
     )
 
 
-def or_reify(var_list, model):
-    var_sum = sum_vars(var_list)
+def or_reify(var_list: list, model: cp_model.CpModel) -> cp_model.IntVar:
+    var_sum = sum(var_list)
     return base_reify(
         var_sum >= 1,
         var_sum < 1,
@@ -45,8 +38,8 @@ def or_reify(var_list, model):
     )
 
 
-def xor_reify(var_list, model):
-    var_sum = sum_vars(var_list)
+def xor_reify(var_list: list, model: cp_model.CpModel) -> cp_model.IntVar:
+    var_sum = sum(var_list)
     return base_reify(
         var_sum == 1,
         var_sum != 1,
@@ -54,7 +47,7 @@ def xor_reify(var_list, model):
     )
 
 
-def eq_tuple_reify(var_tuple, other_var_tuple, model):
+def eq_tuple_reify(var_tuple: tuple, other_var_tuple: tuple, model: cp_model.CpModel) -> cp_model.IntVar:
     positional_equalities = [
         base_reify(
             var_tuple[i] == other_var_tuple[i],
@@ -63,43 +56,3 @@ def eq_tuple_reify(var_tuple, other_var_tuple, model):
         ) for i in range(len(var_tuple))
     ]
     return and_reify(positional_equalities, model)
-
-
-def add_if_then_else(unique_name, if_condition, else_condition, then_constraint, else_constraint, model):
-    """Constrains that for model when the if_condition holds, then_constraint is enforced and that otherwise when else_condition holds, else_constraint is enforced. This creates a BoolVar to enforce the constraints, which is returned. Based on official code at https://github.com/google/or-tools/blob/master/ortools/sat/doc/channeling.md#if-then-else-expressions
-
-    Parameters
-    ----------
-        unique_name: str
-            Name to uniquely identify a generated BoolVar.
-        if_condition: BoundedLinearExpression
-            When satisfied, the then_constraint is enforced.
-        else_condition: BoundedLinearExpression
-            When satisfied, the else_constraint is enforced. This must be the logical negation of if_condition.
-        then_constraint: BoundedLinearExpression
-            Enforced when if_condition holds.
-        else_constraint: BoundedLinearExpression
-            Enforced when else_condition holds.
-        model: CpModel
-            Model to add the constraints to.
-
-    Returns
-    -------
-        BoolVar
-            BoolVar created to enforce the complex constraint.
-    """
-
-    # Declare intermediate boolean variable.
-    b = model.NewBoolVar(unique_name)
-
-    # Implement b == if_condition.
-    model.Add(if_condition).OnlyEnforceIf(b)
-    model.Add(else_condition).OnlyEnforceIf(b.Not())
-
-    # Create two half-reified constraints.
-    # First, b implies then_constraint.
-    model.Add(then_constraint).OnlyEnforceIf(b)
-    # Second, not(b) implies else_constraint.
-    model.Add(else_constraint).OnlyEnforceIf(b.Not())
-
-    return b

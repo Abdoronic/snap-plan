@@ -1,8 +1,13 @@
-from planner.constrainers.room_constrainer import enforce_rooms_be_adjacent
+from ortools.sat.python import cp_model
 
-def constrain_apartment(apartment, floor, model):
+from planner.models.floor import Floor
+from planner.models.apartment import Apartment
+from planner.constrainers.room_constrainer import rooms_are_adjacent
+
+
+def constrain_apartment(apartment: Apartment, floor: Floor, model: cp_model.CpModel):
     for room in apartment.rooms:
         for other_room_idx in room.adjacent_to:
             other_room = apartment.rooms[other_room_idx]
-            enforce_rooms_be_adjacent(room, other_room, model)
-    
+            adjacent = rooms_are_adjacent(room, other_room, model)
+            model.Add(adjacent == 1)
