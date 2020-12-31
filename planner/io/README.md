@@ -114,12 +114,6 @@
     },
     "optionalConstraints": {
       "type": "object",
-      "required": [
-        "allLandscape",
-        "allNearElevator",
-        "symmetry",
-        "goldenRatio"
-      ],
       "properties": {
         "allLandscape": { "type": "boolean" },
         "allNearElevator": { "type": "boolean" },

@@ -5,6 +5,8 @@ import plotly.graph_objects as go
 from planner.models.floor import Floor
 from planner.models.room_type import RoomType
 
+import random
+
 
 def visualize_floor(floor: Floor, solver: cp_model.CpSolver):
     fig = go.Figure()
@@ -20,13 +22,14 @@ def visualize_floor(floor: Floor, solver: cp_model.CpSolver):
         yaxis=dict(
             tickmode='linear',
             tick0=0,
-            dtick=1,
-            scaleanchor="x",
-            scaleratio=1
+            dtick=1
         )
     )
 
+    colors = ['#CB48B7', '#FFA9A3', '#20FC8F', '#5FBFF9', '#FFE74C', '#F24236', '#FCECC9', '#1B98E0', '#FFD2FC']
+    others_color = '#1A1D1A'
     for apartment_no, apartment in enumerate(floor.apartments, 1):
+        apartment_color = colors[random.randint(0, len(colors) - 1)]
         for room_no, room in enumerate(apartment.rooms, 1):
             room_type = room.room_type
             xs = solver.Value(room.variables[0])
@@ -34,8 +37,9 @@ def visualize_floor(floor: Floor, solver: cp_model.CpSolver):
             ys = solver.Value(room.variables[2])
             ye = solver.Value(room.variables[3])
 
-            room_fill_color, room_border_color = get_room_colors(room_type)
-
+            # room_fill_color, room_border_color = get_room_colors(room_type)
+            room_fill_color = apartment_color
+            room_border_color = "Black"
             fig.add_shape(
                 type="rect",
                 x0=xs, y0=ys,
@@ -50,7 +54,7 @@ def visualize_floor(floor: Floor, solver: cp_model.CpSolver):
             fig.add_annotation(
                 x=(xs + xe) / 2,
                 y=(ys + ye) / 2,
-                text=f'{room_type.name.capitalize()} (A{apartment_no})',
+                text=f'{room_type.name.capitalize()[:4]} #{apartment_no, room_no}',
                 showarrow=False
             )
 
@@ -58,4 +62,4 @@ def visualize_floor(floor: Floor, solver: cp_model.CpSolver):
 
 
 def get_room_colors(room_type: RoomType):
-    return 'PaleTurquoise', 'LightSeaGreen'
+    return '#CB48B7', 'Black'
