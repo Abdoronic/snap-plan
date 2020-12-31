@@ -51,15 +51,42 @@
             },
             "minItems": 1
         },
-        "numberOfElevators": {
+        "elevator": {
+            "type": "object",
+            "required": [
+                "width",
+                "length"
+            ],
+            "properties": {
+                "width": {
+                    "type": "number"
+                },
+                "length": {
+                    "type": "number"
+                }
+            }
+        },
+        "stairs": {
+            "type": "object",
+            "required": [
+                "width",
+                "length"
+            ],
+            "properties": {
+                "width": {
+                    "type": "number"
+                },
+                "length": {
+                    "type": "number"
+                }
+            }
+        },
+        "numberOfCorridors": {
             "type": "number"
         },
-        "numberOfStairs": {
-            "type": "number"
+        "optionalConstraints": {
+            "$ref": "#/definitions/optionalConstraints"
         },
-        "numberOfDucts": {
-            "type": "number"
-        }
     },
     "definitions": {
         "view": {
@@ -73,15 +100,23 @@
         "apartment": {
             "type": "object",
             "required": [
-                "rooms"
+                "count",
+                "rooms",
+                "numberOfHallways"
             ],
             "properties": {
+                "count": {
+                    "type": "number"
+                },
                 "rooms": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/room"
                     },
                     "minItems": 1
+                },
+                "numberOfHallways": {
+                    "type": "number"
                 },
                 "roomSpacings": {
                     "type": "array",
@@ -117,7 +152,7 @@
                 "minArea"
             ],
             "properties": {
-                "room_type": {
+                "roomType": {
                     "type": "string",
                     "enum": [
                         "BEDROOM",
@@ -144,6 +179,23 @@
                     "items": {
                         "type": "number"
                     }
+                }
+            }
+        },
+        "optionalConstraints": {
+            "type": "object",
+            "properties": {
+                "allLandscape": {
+                    "type": "boolean"
+                },
+                "allNearElevator": {
+                    "type": "boolean"
+                },
+                "symmetry": {
+                    "type": "boolean"
+                },
+                "goldenRatio": {
+                    "type": "boolean"
                 }
             }
         }
