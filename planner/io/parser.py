@@ -12,12 +12,11 @@ script_dir = os.path.dirname(__file__)
 planner_path = os.path.join(script_dir, "../..")
 sys.path.append(os.path.abspath(planner_path))
 
+DEFAULT_STAIRS_DIMENSIONS = (2, 2)
+DEFAULT_ElEVATOR_DIMENSIONS = (1, 1)
+
 
 def parse_floor(path):
-    # TODO Should include reference to global view constraints
-    # TODO Should account for extra non-apartment spaces
-    # TODO Should account for roomSpacings
-
     floor_json = load_json(path)
     validate_floor(floor_json)
     floor = json_to_floor(floor_json)
@@ -33,18 +32,64 @@ def json_to_floor(floor_json):
                             ))
 
     apartments_json = floor_json['apartments']
-    apartments = [*map(parse_apartment, apartments_json)]
-    return Floor(width, length, sides_views, apartments)
+    apartments_nested = [*map(parse_apartment_types, enumerate(apartments_json))]
+    apartments = [a for a_list in apartments_nested for a in a_list]
+
+    stairs_dimensions = DEFAULT_STAIRS_DIMENSIONS
+    if 'stairs' in floor_json:
+        stairs_dimensions = (
+            floor_json['stairs']['width'],
+            floor_json['stairs']['length']
+        )
+
+    elevator_dimensions = DEFAULT_ElEVATOR_DIMENSIONS
+    if 'elevator' in floor_json:
+        elevator_dimensions = (
+            floor_json['elevator']['width'],
+            floor_json['elevator']['length']
+        )
+    
+    number_of_corridors = len(apartments) + 1
+    if 'numberOfCorridors' in floor_json:
+        number_of_corridors = floor_json['numberOfCorridors']
+        
+
+    optional_constraints = {}
+    if 'optionalConstraints' in floor_json:
+        optional_constraints = floor_json['optionalConstraints']
+    
+    return Floor(
+        width,
+        length,
+        sides_views,
+        apartments,
+        stairs_dimensions,
+        elevator_dimensions,
+        number_of_corridors,
+        optional_constraints
+    )
 
 
 def parse_view(view_string):
     return View[view_string]
 
 
-def parse_apartment(apartment_json):
+def parse_apartment_types(idx_apartment_pair):
+    idx, apartment_json = idx_apartment_pair
+    count = apartment_json['count']
+    type_id = idx
     rooms_json = apartment_json['rooms']
     rooms = [*map(parse_room, rooms_json)]
-    return Apartment(rooms)
+    number_of_hallways = apartment_json['numberOfHallways']
+    room_spacings = []
+    if 'roomSpacings' in apartment_json:
+        room_spacings = parse_room_spacings(apartment_json['roomSpacings'])
+    return [Apartment(
+        type_id,
+        rooms,
+        number_of_hallways,
+        room_spacings
+    ) for _ in range(count)]
 
 
 def parse_room(room_json):
@@ -65,10 +110,11 @@ def parse_room(room_json):
 
     return Room(room_type, min_area, preferred_width, preferred_length, adjacent_to)
 
-
 def parse_room_type(room_type_string):
     return RoomType[room_type_string]
 
+def parse_room_spacings(spacings):
+    return [(a, b, r, d) for a, b, r, d in spacings]
 
 def load_json(path, relative_to_source_file=False):
     """ Reads a JSON file from path
