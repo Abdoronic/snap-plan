@@ -11,6 +11,7 @@
     },
     "apartments": [
         {
+            "count": 1,
             "rooms": [
                 {
                     "roomType": "BEDROOM",
@@ -24,9 +25,11 @@
                     "roomType": "KITCHEN",
                     "minArea": 15
                 }
-            ]
+            ],
+            "numberOfHallways": 1
         },
         {
+            "count": 1,
             "rooms": [
                 {
                     "roomType": "BEDROOM",
@@ -47,7 +50,8 @@
                     "roomType": "KITCHEN",
                     "minArea": 12
                 }
-            ]
+            ],
+            "numberOfHallways": 1
         }
     ]
 }
