@@ -8,6 +8,12 @@ from typing import List, Tuple, Dict
 
 
 class Floor:
+
+    ALL_LANDSCAPE_CONSTRAINT_KEY = 'allLandscape'
+    NEAR_ELEVATOR_CONSTRAINT_KEY = 'allNearElevator'
+    SYMMETRY_CONSTRAINT_KEY = 'symmetry'
+    GOLDEN_RATIO_CONSTRAINT_KEY = 'goldenRatio'
+
     def __init__(
         self,
         width: int,
@@ -49,20 +55,20 @@ class Floor:
         self.number_of_corridors = number_of_corridors
 
         self.has_all_landscape_constraint = (
-            'allLandscape' in optional_constraints
-            and optional_constraints['allLandscape']
+            Floor.ALL_LANDSCAPE_CONSTRAINT_KEY in optional_constraints
+            and optional_constraints[Floor.ALL_LANDSCAPE_CONSTRAINT_KEY]
         )
         self.has_all_near_elevator_constraint = (
-            'allNearElevator' in optional_constraints
-            and optional_constraints['allNearElevator']
+            Floor.NEAR_ELEVATOR_CONSTRAINT_KEY in optional_constraints
+            and optional_constraints[Floor.NEAR_ELEVATOR_CONSTRAINT_KEY]
         )
         self.has_symmetry_constraint = (
-            'symmetry' in optional_constraints
-            and optional_constraints['symmetry']
+            Floor.SYMMETRY_CONSTRAINT_KEY in optional_constraints
+            and optional_constraints[Floor.SYMMETRY_CONSTRAINT_KEY]
         )
         self.has_golden_ratio_constraint = (
-            'goldenRatio' in optional_constraints
-            and optional_constraints['goldenRatio']
+            Floor.GOLDEN_RATIO_CONSTRAINT_KEY in optional_constraints
+            and optional_constraints[Floor.GOLDEN_RATIO_CONSTRAINT_KEY]
         )
 
         CpShapeVar = Tuple[

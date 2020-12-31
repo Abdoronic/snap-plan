@@ -12,6 +12,9 @@ script_dir = os.path.dirname(__file__)
 planner_path = os.path.join(script_dir, "../..")
 sys.path.append(os.path.abspath(planner_path))
 
+DEFAULT_STAIRS_DIMENSIONS = (2, 2)
+DEFAULT_ElEVATOR_DIMENSIONS = (1, 1)
+
 
 def parse_floor(path):
     floor_json = load_json(path)
@@ -29,17 +32,17 @@ def json_to_floor(floor_json):
                             ))
 
     apartments_json = floor_json['apartments']
-    apartments_nested = [*map(parse_apartment, enumerate(apartments_json))]
+    apartments_nested = [*map(parse_apartment_types, enumerate(apartments_json))]
     apartments = [a for a_list in apartments_nested for a in a_list]
 
-    stairs_dimensions = (2, 2)
+    stairs_dimensions = DEFAULT_STAIRS_DIMENSIONS
     if 'stairs' in floor_json:
         stairs_dimensions = (
             floor_json['stairs']['width'],
             floor_json['stairs']['length']
         )
 
-    elevator_dimensions = (1, 1)
+    elevator_dimensions = DEFAULT_ElEVATOR_DIMENSIONS
     if 'elevator' in floor_json:
         elevator_dimensions = (
             floor_json['elevator']['width'],
@@ -71,7 +74,7 @@ def parse_view(view_string):
     return View[view_string]
 
 
-def parse_apartment(idx_apartment_pair):
+def parse_apartment_types(idx_apartment_pair):
     idx, apartment_json = idx_apartment_pair
     count = apartment_json['count']
     type_id = idx
