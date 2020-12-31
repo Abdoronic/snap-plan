@@ -86,7 +86,7 @@
         },
         "optionalConstraints": {
             "$ref": "#/definitions/optionalConstraints"
-        },
+        }
     },
     "definitions": {
         "view": {
@@ -184,6 +184,12 @@
         },
         "optionalConstraints": {
             "type": "object",
+            "required": [
+                "allLandscape",
+                "allNearElevator",
+                "symmetry",
+                "goldenRatio"
+            ],
             "properties": {
                 "allLandscape": {
                     "type": "boolean"

@@ -49,7 +49,7 @@
       }
     },
     "numberOfCorridors": { "type": "number" },
-    "optionalConstraints": { "$ref": "#/definitions/optionalConstraints" },
+    "optionalConstraints": { "$ref": "#/definitions/optionalConstraints" }
   },
 
   "definitions": {
@@ -114,6 +114,12 @@
     },
     "optionalConstraints": {
       "type": "object",
+      "required": [
+        "allLandscape",
+        "allNearElevator",
+        "symmetry",
+        "goldenRatio"
+      ],
       "properties": {
         "allLandscape": { "type": "boolean" },
         "allNearElevator": { "type": "boolean" },
