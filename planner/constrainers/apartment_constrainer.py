@@ -9,6 +9,7 @@ from planner.constrainers.utils import all_shapes_adjacent_in_order, and_reify, 
 
 from typing import List
 
+
 def constrain_apartment(apartment: Apartment, floor: Floor, model: cp_model.CpModel):
     constrain_room_adjacency(apartment, model)
     constrain_ducts(apartment, model)
@@ -44,7 +45,7 @@ def constrain_ducts(apartment: Apartment, model: cp_model.CpModel):
             [
                 shape_adjacent_to_any(room.variables, ducts_shapes, model)
                 for room in apartment.rooms
-                    if room.room_type in room_types_needing_ducts
+                if room.room_type in room_types_needing_ducts
             ],
             model
         )
@@ -65,11 +66,12 @@ def constrain_hallways(apartment: Apartment, model: cp_model.CpModel):
     )
     model.Add(and_reify([hallways_adjacent, rooms_connected], model) == 1)
 
+
 def apartment_connected_to_corridors(
-    apartment: Apartment,
-    corridors: List[Module],
-    model: cp_model.CpModel):
-    corridors_shapes = [*map(lambda corridor : corridor.variables, corridors)]
+        apartment: Apartment,
+        corridors: List[Module],
+        model: cp_model.CpModel):
+    corridors_shapes = [*map(lambda corridor: corridor.variables, corridors)]
     return or_reify(
         [
             shape_adjacent_to_any(hallway.variables, corridors_shapes, model)

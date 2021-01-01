@@ -1,3 +1,4 @@
+from planner.models.room_type import RoomType
 from ortools.sat.python import cp_model
 
 from planner.models.floor import Floor
@@ -16,6 +17,8 @@ def constrain_floor(floor: Floor, model: cp_model.CpModel):
     constrain_no_overlap(floor, model)
 
     constrain_all_area_utilized(floor, model)
+
+    constrain_sunrooms_daylight(floor, model)
 
     constrain_stairs(floor, model)
     constrain_elevator(floor, model)
@@ -74,7 +77,13 @@ def constrain_all_area_utilized(floor: Floor, model: cp_model.CpModel):
             areas.append(hallway.area_variable)
 
     model.Add(sum(areas) == floor.width * floor.length)
-    
+
+
+def constrain_sunrooms_daylight(floor: Floor, model: cp_model.CpModel):
+    for room in floor.rooms:
+        if room.room_type == RoomType.SUN_ROOM:
+            model.Add(has_daylight(room, floor, model) == 1)
+
 
 def has_daylight(room: Room, floor: Floor, model: cp_model.CpModel):
     return has_view_of_types(room, [v for v in View if v != View.NO_VIEW], floor, model)
