@@ -4,8 +4,9 @@ from planner.models.floor import Floor
 from planner.models.room import Room
 from planner.models.view import View
 from planner.constrainers.apartment_constrainer import constrain_apartment
-from planner.constrainers.room_constrainer import constrain_room, rooms_are_adjacent
+from planner.constrainers.room_constrainer import constrain_room
 from planner.constrainers.modules_constrainer import constraint_module, constraint_slim_modules
+from planner.constrainers.utils import shapes_are_adjacent
 
 from planner.constrainers.utils import or_reify
 from typing import List
@@ -78,7 +79,7 @@ def has_view_of_types(room: Room, room_view_types: List[View], floor: Floor, mod
 
     possible_side_adjacencies = list(
         map(
-            lambda side: rooms_are_adjacent(room, side, model),
+            lambda side: shapes_are_adjacent(room.variables, side.variables, model),
             possible_sides
         )
     )
