@@ -12,6 +12,7 @@ from typing import List
 
 def constrain_apartment(apartment: Apartment, floor: Floor, model: cp_model.CpModel):
     constrain_room_adjacency(apartment, model)
+    constrain_dinning_rooms(apartment, model)
     constrain_ducts(apartment, model)
     constrain_hallways(apartment, model)
 
@@ -26,6 +27,27 @@ def constrain_room_adjacency(apartment: Apartment, model: cp_model.CpModel):
                 model
             )
             model.Add(adjacent == 1)
+
+
+def constrain_dinning_rooms(apartment: Apartment, model: cp_model.CpModel):
+    kitchens = [
+        room for room in apartment.rooms
+        if room.room_type == RoomType.KITCHEN
+    ]
+    dining_rooms = [
+        room for room in apartment.rooms
+        if room.room_type == RoomType.DINING_ROOM
+    ]
+    kitchens_shapes = [*map(lambda kitchen: kitchen.variables, kitchens)]
+    if len(dining_rooms) > 0:
+        near_a_kitchen = and_reify(
+            [
+                shape_adjacent_to_any(room.variables, kitchens_shapes, model)
+                for room in dining_rooms
+            ],
+            model
+        )
+        model.Add(near_a_kitchen == 1)
 
 
 def constrain_ducts(apartment: Apartment, model: cp_model.CpModel):

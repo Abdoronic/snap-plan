@@ -1,7 +1,7 @@
 {
     "dimensions": {
-        "width": 15,
-        "length": 15
+        "width": 20,
+        "length": 20
     },
     "viewQuality": {
         "north": "OPEN_AREA",
@@ -24,6 +24,10 @@
                 {
                     "roomType": "KITCHEN",
                     "minArea": 15
+                },
+                {
+                    "roomType": "DINING_ROOM",
+                    "minArea": 12
                 }
             ],
             "numberOfHallways": 1
