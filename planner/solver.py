@@ -6,6 +6,9 @@ from planner.solution_handler import SolutionHandler
 
 from planner.models.floor import Floor
 from planner.models.apartment import Apartment
+from planner.models.module import Module
+
+from typing import List
 
 
 def plan_floor(floor: Floor):
@@ -30,25 +33,26 @@ def plan_floor(floor: Floor):
 
 def create_variables(floor: Floor, model: cp_model.CpModel):
     floor.score_variable = model.NewIntVar(0, 1, 'floor_score')
-    floor.elevator_variables = new_shape_var(floor.width, floor.length, model)
+
+    create_module_variables(floor, floor.stairs, model)
+    create_module_variables(floor, floor.elevator, model)
+    create_modules_variables(floor, floor.corridors, model)
+
     for apartment in floor.apartments:
-        create_hallways_variables(floor, apartment, model)
-        create_ducts_variables(floor, apartment, model)
         create_room_variables(floor, apartment, model)
+        create_modules_variables(floor, apartment.hallways, model)
+        create_modules_variables(floor, apartment.ducts, model)
 
 
-def create_hallways_variables(floor: Floor, apartment: Apartment, model: cp_model.CpModel):
-    apartment.hallways_variables = [
-        new_shape_var(floor.width, floor.length, model)
-        for _ in range(apartment.number_of_hallways)
-    ]
+def create_modules_variables(floor: Floor, modules: List[Module], model: cp_model.CpModel):
+    for module in modules:
+        create_module_variables(floor, module, model)
 
 
-def create_ducts_variables(floor: Floor, apartment: Apartment, model: cp_model.CpModel):
-    apartment.ducts_variables = [
-        new_shape_var(floor.width, floor.length, model)
-        for _ in range(apartment.number_of_ducts)
-    ]
+def create_module_variables(floor: Floor, module: Module, model: cp_model.CpModel):
+    module.variables = new_shape_var(floor.width, floor.length, model)
+    module.width_variable = model.NewIntVar(0, floor.width, '')
+    module.length_variable = model.NewIntVar(0, floor.length, '')
 
 
 def create_room_variables(floor: Floor, apartment: Apartment, model: cp_model.CpModel):

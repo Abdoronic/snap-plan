@@ -2,6 +2,7 @@ from ortools.sat.python import cp_model
 
 from planner.models.apartment import Apartment
 from planner.models.room import Room
+from planner.models.module import Module
 from planner.models.view import View
 
 from typing import List, Tuple, Dict
@@ -71,16 +72,13 @@ class Floor:
             and optional_constraints[Floor.GOLDEN_RATIO_CONSTRAINT_KEY]
         )
 
-        CpShapeVar = Tuple[
-            cp_model.IntVar,
-            cp_model.IntVar,
-            cp_model.IntVar,
-            cp_model.IntVar
+        self.corridors: List[Module] = [
+            Module()
+            for _ in range(self.number_of_corridors)
         ]
+        self.stairs: Module = Module()
+        self.elevator: Module = Module()
 
-        self.corridors_variables: List[CpShapeVar] = None
-        self.stairs_variables: CpShapeVar = None
-        self.elevator_variables: CpShapeVar = None
         self.score_variable: cp_model.IntVar = None
 
     def __str__(self):
