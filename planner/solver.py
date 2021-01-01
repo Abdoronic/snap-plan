@@ -56,9 +56,9 @@ def create_room_variables(floor: Floor, apartment: Apartment, model: cp_model.Cp
     length = floor.length
     area = width * length
     for room in apartment.rooms:
-        room.area_variable = model.NewIntVar(0, area, '')
-        room.width_variable = model.NewIntVar(0, width, '')
-        room.length_variable = model.NewIntVar(0, length, '')
+        room.area_variable = model.NewIntVar(room.min_area, area, '')
+        room.width_variable = model.NewIntVar(1, width, '')
+        room.length_variable = model.NewIntVar(1, length, '')
         room.variables = new_shape_var(width, length, model)
 
 
