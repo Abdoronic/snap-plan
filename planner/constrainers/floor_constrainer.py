@@ -5,6 +5,7 @@ from planner.models.room import Room
 from planner.models.view import View
 from planner.constrainers.apartment_constrainer import constrain_apartment
 from planner.constrainers.room_constrainer import constrain_room, rooms_are_adjacent
+from planner.constrainers.modules_constrainer import constraint_corridors, constraint_elevator, constraint_stairs
 
 from planner.constrainers.utils import or_reify
 from typing import List
@@ -12,6 +13,10 @@ from typing import List
 
 def constrain_floor(floor: Floor, model: cp_model.CpModel):
     no_overlap(floor, model)
+
+    constraint_stairs(floor, model)
+    constraint_elevator(floor, model)
+    constraint_corridors(floor, model)
 
     for apartment in floor.apartments:
         constrain_apartment(apartment, floor, model)
