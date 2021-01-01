@@ -5,7 +5,7 @@ from planner.models.room import Room
 from planner.models.view import View
 from planner.constrainers.apartment_constrainer import constrain_apartment
 from planner.constrainers.room_constrainer import constrain_room, rooms_are_adjacent
-from planner.constrainers.modules_constrainer import constraint_corridors, constraint_elevator, constraint_stairs
+from planner.constrainers.modules_constrainer import constraint_module, constraint_slim_modules
 
 from planner.constrainers.utils import or_reify
 from typing import List
@@ -84,3 +84,23 @@ def has_view_of_types(room: Room, room_view_types: List[View], floor: Floor, mod
     )
 
     return or_reify(possible_side_adjacencies, model)
+
+def constraint_stairs(floor: Floor, model: cp_model.CpModel):
+    stairs = floor.stairs
+    constraint_module(stairs, model)
+
+    model.Add(stairs.width_variable == floor.stairs_dimensions[0])
+    model.Add(stairs.length_variable == floor.stairs_dimensions[1])
+
+
+def constraint_elevator(floor: Floor, model: cp_model.CpModel):
+    elevator = floor.elevator
+    constraint_module(elevator, model)
+
+    model.Add(elevator.width_variable == floor.elevator_dimensions[0])
+    model.Add(elevator.length_variable == floor.elevator_dimensions[1])
+
+
+def constraint_corridors(floor: Floor, model: cp_model.CpModel):
+    constraint_slim_modules(floor.corridors, model)
+
