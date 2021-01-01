@@ -26,10 +26,11 @@ def visualize_floor(floor: Floor, solver: cp_model.CpSolver):
         )
     )
 
-    colors = ['#CB48B7', '#FFA9A3', '#20FC8F', '#5FBFF9', '#FFE74C', '#F24236', '#FCECC9', '#1B98E0', '#FFD2FC']
+    colors = ['#CB48B7', '#FFA9A3', '#20FC8F', '#5FBFF9',
+              '#FFE74C', '#F24236', '#FCECC9', '#1B98E0', '#FFD2FC']
     others_color = '#1A1D1A'
     for apartment_no, apartment in enumerate(floor.apartments, 1):
-        apartment_color = colors[random.randint(0, len(colors) - 1)]
+        apartment_color = colors[(apartment_no - 1) % len(colors)]
         for room_no, room in enumerate(apartment.rooms, 1):
             room_type = room.room_type
             xs = solver.Value(room.variables[0])
@@ -54,7 +55,7 @@ def visualize_floor(floor: Floor, solver: cp_model.CpSolver):
             fig.add_annotation(
                 x=(xs + xe) / 2,
                 y=(ys + ye) / 2,
-                text=f'{room_type.name.capitalize()[:4]} #{apartment_no, room_no}',
+                text=f'{room_type.name.capitalize()[:4]} #{apartment.type_id, room_no}',
                 showarrow=False
             )
 
