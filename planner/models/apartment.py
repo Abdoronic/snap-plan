@@ -24,7 +24,7 @@ class Apartment:
         self.number_of_hallways = number_of_hallways
         self.spacings = spacings
 
-        self.number_of_ducts: int = 0
+        self.number_of_ducts: int = 1
         for room in rooms:
             if room.room_type == RoomType.BATHROOM or room.room_type == RoomType.KITCHEN:
                 self.number_of_ducts += 1

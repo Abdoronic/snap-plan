@@ -3,6 +3,7 @@ from ortools.sat.python import cp_model
 from planner.models.floor import Floor
 from planner.models.apartment import Apartment
 from planner.models.module import Module
+from planner.models.room_type import RoomType
 from planner.constrainers.modules_constrainer import constraint_module, constraint_slim_modules
 from planner.constrainers.utils import all_shapes_adjacent_in_order, and_reify, or_reify, shape_adjacent_to_any, shapes_are_adjacent
 
@@ -27,10 +28,27 @@ def constrain_room_adjacency(apartment: Apartment, model: cp_model.CpModel):
 
 
 def constrain_ducts(apartment: Apartment, model: cp_model.CpModel):
-    for duct in apartment.ducts:
+    ducts = apartment.ducts
+    for duct in ducts:
         constraint_module(duct, model)
         model.Add(duct.width_variable == 1)
         model.Add(duct.length_variable == 1)
+    ducts_shapes = [*map(lambda duct: duct.variables, ducts)]
+    room_types_needing_ducts = [
+        RoomType.KITCHEN,
+        RoomType.MASTER_BATHROOM,
+        RoomType.BATHROOM
+    ]
+    if len(ducts) > 0:
+        have_ducts = and_reify(
+            [
+                shape_adjacent_to_any(room.variables, ducts_shapes, model)
+                for room in apartment.rooms
+                    if room.room_type in room_types_needing_ducts
+            ],
+            model
+        )
+        model.Add(have_ducts == 1)
 
 
 def constrain_hallways(apartment: Apartment, model: cp_model.CpModel):
