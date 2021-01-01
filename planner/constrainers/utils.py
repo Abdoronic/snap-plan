@@ -56,3 +56,17 @@ def eq_tuple_reify(var_tuple: tuple, other_var_tuple: tuple, model: cp_model.CpM
         ) for i in range(len(var_tuple))
     ]
     return and_reify(positional_equalities, model)
+
+
+def eq_var_reify(var: cp_model.IntVar, other_var: cp_model.IntVar, model: cp_model.CpModel) -> cp_model.IntVar:
+    return base_reify(
+        var == other_var,
+        var != other_var,
+        model
+    )
+
+
+def fail_reify(model: cp_model.CpModel) -> cp_model.IntVar:
+    b = model.NewBoolVar('')
+    model.Add(b == 0)
+    return b

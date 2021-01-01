@@ -65,10 +65,9 @@ def has_view_of_types(room: Room, room_view_types: List[View], floor: Floor, mod
             side_as_room.variables = sides_coordinates[i]
             possible_sides.append(side_as_room)
 
-    if possible_sides.count == 0:
-        has_to_fail = model.NewBoolVar('')
-        model.Add(has_to_fail == 0)
-        model.Add(has_to_fail == 1)
+    if len(possible_sides):
+        fail = fail_reify(model)
+        model.Add(fail == 1)
         return
 
     possible_side_adjacencies = list(
