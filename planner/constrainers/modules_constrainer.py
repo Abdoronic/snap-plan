@@ -11,11 +11,13 @@ def constraint_module(module: Module, model: cp_model.CpModel):
 
     width = module.width_variable
     length = module.length_variable
+    area = module.area_variable
 
     model.Add(xs < xe)
     model.Add(ys < ye)
     model.Add(xe - xs == width)
     model.Add(ye - ys == length)
+    model.AddMultiplicationEquality(area, [width, length])
 
 
 def constraint_slim_modules(modules: List[Module], model: cp_model.CpModel):

@@ -13,7 +13,9 @@ from typing import List
 
 
 def constrain_floor(floor: Floor, model: cp_model.CpModel):
-    no_overlap(floor, model)
+    constrain_no_overlap(floor, model)
+
+    constrain_all_area_utilized(floor, model)
 
     constrain_stairs(floor, model)
     constrain_elevator(floor, model)
@@ -26,7 +28,7 @@ def constrain_floor(floor: Floor, model: cp_model.CpModel):
         constrain_room(room, floor, model)
 
 
-def no_overlap(floor: Floor, model: cp_model.CpModel):
+def constrain_no_overlap(floor: Floor, model: cp_model.CpModel):
     x_intervals = []
     y_intervals = []
 
@@ -54,6 +56,25 @@ def no_overlap(floor: Floor, model: cp_model.CpModel):
 
     model.AddNoOverlap2D(x_intervals, y_intervals)
 
+
+def constrain_all_area_utilized(floor: Floor, model: cp_model.CpModel):
+    areas = []
+    areas.append(floor.stairs.area_variable)
+    areas.append(floor.elevator.area_variable)
+
+    for corridor in floor.corridors:
+        areas.append(corridor.area_variable)
+
+    for apartment in floor.apartments:
+        for room in apartment.rooms:
+            areas.append(room.area_variable)
+        for duct in apartment.ducts:
+            areas.append(duct.area_variable)
+        for hallway in apartment.hallways:
+            areas.append(hallway.area_variable)
+
+    model.Add(sum(areas) == floor.width * floor.length)
+    
 
 def has_daylight(room: Room, floor: Floor, model: cp_model.CpModel):
     return has_view_of_types(room, [v for v in View if v != View.NO_VIEW], floor, model)

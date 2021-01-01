@@ -1,0 +1,54 @@
+{
+    "dimensions": {
+        "width": 12,
+        "length": 12
+    },
+    "viewQuality": {
+        "north": "OPEN_AREA",
+        "west": "NO_VIEW",
+        "south": "OPEN_AREA",
+        "east": "LANDSCAPE"
+    },
+    "apartments": [
+        {
+            "count": 1,
+            "rooms": [
+                {
+                    "roomType": "BEDROOM",
+                    "minArea": 20
+                },
+                {
+                    "roomType": "BATHROOM",
+                    "minArea": 10
+                },
+                {
+                    "roomType": "KITCHEN",
+                    "minArea": 15
+                }
+            ],
+            "numberOfHallways": 1
+        },
+        {
+            "count": 1,
+            "rooms": [
+                {
+                    "roomType": "BEDROOM",
+                    "minArea": 20
+                },
+                {
+                    "roomType": "BEDROOM",
+                    "minArea": 12
+                },
+                {
+                    "roomType": "BATHROOM",
+                    "minArea": 10
+                },
+                {
+                    "roomType": "KITCHEN",
+                    "minArea": 12
+                }
+            ],
+            "numberOfHallways": 2
+        }
+    ]
+}

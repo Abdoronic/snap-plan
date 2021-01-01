@@ -53,6 +53,7 @@ def create_module_variables(floor: Floor, module: Module, model: cp_model.CpMode
     module.variables = new_shape_var(floor.width, floor.length, model)
     module.width_variable = model.NewIntVar(0, floor.width, '')
     module.length_variable = model.NewIntVar(0, floor.length, '')
+    module.area_variable = model.NewIntVar(0, floor.width * floor.length, '')
 
 
 def create_room_variables(floor: Floor, apartment: Apartment, model: cp_model.CpModel):
