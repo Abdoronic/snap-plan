@@ -30,13 +30,28 @@ def no_overlap(floor: Floor, model: cp_model.CpModel):
     x_intervals = []
     y_intervals = []
 
-    for room in floor.rooms:
-        (xs, xe, ys, ye) = room.variables
-        xd = room.width_variable
-        yd = room.length_variable
+    def add_intervals(module):
+        (xs, xe, ys, ye) = module.variables
+        xd = module.width_variable
+        yd = module.length_variable
 
         x_intervals.append(model.NewIntervalVar(xs, xd, xe, ''))
         y_intervals.append(model.NewIntervalVar(ys, yd, ye, ''))
+
+    add_intervals(floor.stairs)
+    add_intervals(floor.elevator)
+
+    for corridor in floor.corridors:
+        add_intervals(corridor)
+
+    for apartment in floor.apartments:
+        for room in apartment.rooms:
+            add_intervals(room)
+        for duct in apartment.ducts:
+            add_intervals(duct)
+        for hallway in apartment.hallways:
+            add_intervals(hallway)
+
 
     model.AddNoOverlap2D(x_intervals, y_intervals)
 
