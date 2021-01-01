@@ -6,12 +6,15 @@ from planner.models.view import View
 from planner.constrainers.apartment_constrainer import constrain_apartment
 from planner.constrainers.room_constrainer import constrain_room, rooms_are_adjacent
 
-from planner.constrainers.utils import or_reify
+from planner.constrainers.symmetry_constrainer import constrain_symmetry_over_apartment_class
+
+from planner.constrainers.utils import or_reify, fail_reify
 from typing import List
 
 
 def constrain_floor(floor: Floor, model: cp_model.CpModel):
     no_overlap(floor, model)
+    constrain_symmetry_over_apartment_class(floor, model)
 
     for apartment in floor.apartments:
         constrain_apartment(apartment, floor, model)
