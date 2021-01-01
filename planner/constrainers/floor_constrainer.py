@@ -15,9 +15,9 @@ from typing import List
 def constrain_floor(floor: Floor, model: cp_model.CpModel):
     no_overlap(floor, model)
 
-    constraint_stairs(floor, model)
-    constraint_elevator(floor, model)
-    constraint_corridors(floor, model)
+    constrain_stairs(floor, model)
+    constrain_elevator(floor, model)
+    constrain_corridors(floor, model)
 
     for apartment in floor.apartments:
         constrain_apartment(apartment, floor, model)
@@ -101,7 +101,7 @@ def has_view_of_types(room: Room, room_view_types: List[View], floor: Floor, mod
 
     return or_reify(possible_side_adjacencies, model)
 
-def constraint_stairs(floor: Floor, model: cp_model.CpModel):
+def constrain_stairs(floor: Floor, model: cp_model.CpModel):
     stairs = floor.stairs
     constraint_module(stairs, model)
 
@@ -109,7 +109,7 @@ def constraint_stairs(floor: Floor, model: cp_model.CpModel):
     model.Add(stairs.length_variable == floor.stairs_dimensions[1])
 
 
-def constraint_elevator(floor: Floor, model: cp_model.CpModel):
+def constrain_elevator(floor: Floor, model: cp_model.CpModel):
     elevator = floor.elevator
     constraint_module(elevator, model)
 
@@ -117,6 +117,6 @@ def constraint_elevator(floor: Floor, model: cp_model.CpModel):
     model.Add(elevator.length_variable == floor.elevator_dimensions[1])
 
 
-def constraint_corridors(floor: Floor, model: cp_model.CpModel):
+def constrain_corridors(floor: Floor, model: cp_model.CpModel):
     constraint_slim_modules(floor.corridors, model)
 
