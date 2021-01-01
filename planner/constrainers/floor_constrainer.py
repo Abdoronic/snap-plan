@@ -3,10 +3,10 @@ from ortools.sat.python import cp_model
 from planner.models.floor import Floor
 from planner.models.room import Room
 from planner.models.view import View
-from planner.constrainers.apartment_constrainer import constrain_apartment
+from planner.constrainers.apartment_constrainer import apartment_connected_to_corridors, constrain_apartment
 from planner.constrainers.room_constrainer import constrain_room
 from planner.constrainers.modules_constrainer import constraint_module, constraint_slim_modules
-from planner.constrainers.utils import shapes_are_adjacent
+from planner.constrainers.utils import all_shapes_adjacent_in_order, and_reify, shape_adjacent_to_any, shapes_are_adjacent
 
 from planner.constrainers.utils import or_reify
 from typing import List
@@ -52,7 +52,6 @@ def no_overlap(floor: Floor, model: cp_model.CpModel):
         for hallway in apartment.hallways:
             add_intervals(hallway)
 
-
     model.AddNoOverlap2D(x_intervals, y_intervals)
 
 
@@ -94,12 +93,14 @@ def has_view_of_types(room: Room, room_view_types: List[View], floor: Floor, mod
 
     possible_side_adjacencies = list(
         map(
-            lambda side: shapes_are_adjacent(room.variables, side.variables, model),
+            lambda side: shapes_are_adjacent(
+                room.variables, side.variables, model),
             possible_sides
         )
     )
 
     return or_reify(possible_side_adjacencies, model)
+
 
 def constrain_stairs(floor: Floor, model: cp_model.CpModel):
     stairs = floor.stairs
@@ -118,5 +119,38 @@ def constrain_elevator(floor: Floor, model: cp_model.CpModel):
 
 
 def constrain_corridors(floor: Floor, model: cp_model.CpModel):
-    constraint_slim_modules(floor.corridors, model)
+    corridors = floor.corridors
+    constraint_slim_modules(corridors, model)
 
+    corridors_shapes = [*map(lambda corridor: corridor.variables, corridors)]
+    corridors_adjacent = all_shapes_adjacent_in_order(corridors_shapes, model)
+
+    stairs_connected = shape_adjacent_to_any(
+        floor.stairs.variables,
+        corridors_shapes,
+        model
+    )
+    elevator_connected = shape_adjacent_to_any(
+        floor.elevator.variables,
+        corridors_shapes,
+        model
+    )
+
+    hallways_connected = and_reify(
+        [
+            apartment_connected_to_corridors(apartment, corridors, model)
+            for apartment in floor.apartments
+        ],
+        model
+    )
+    model.Add(
+        and_reify(
+            [
+                corridors_adjacent,
+                stairs_connected,
+                elevator_connected,
+                hallways_connected
+            ],
+            model
+        ) == 1
+    )

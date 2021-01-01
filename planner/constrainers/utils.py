@@ -1,6 +1,6 @@
 from ortools.sat.python import cp_model
 
-from typing import Tuple
+from typing import List, Tuple
 
 
 def base_reify(condition: cp_model.Constraint, not_condition: cp_model.Constraint, model: cp_model.CpModel) -> cp_model.IntVar:
@@ -58,6 +58,32 @@ def eq_tuple_reify(var_tuple: tuple, other_var_tuple: tuple, model: cp_model.CpM
         ) for i in range(len(var_tuple))
     ]
     return and_reify(positional_equalities, model)
+
+
+def all_shapes_adjacent_in_order(
+    shapes: List[Tuple[cp_model.IntVar, cp_model.IntVar, cp_model.IntVar, cp_model.IntVar]],
+    model: cp_model.CpModel
+):
+    return and_reify(
+        [
+            shapes_are_adjacent(shapes[i], shapes[ i + 1], model)
+            for i in range(len(shapes) - 1)
+        ],
+        model
+    )
+
+def shape_adjacent_to_any(
+    target_shape: Tuple[cp_model.IntVar, cp_model.IntVar, cp_model.IntVar, cp_model.IntVar],
+    shapes: List[Tuple[cp_model.IntVar, cp_model.IntVar, cp_model.IntVar, cp_model.IntVar]],
+    model: cp_model.CpModel
+):
+    return or_reify(
+        [
+            shapes_are_adjacent(target_shape, shape, model)
+            for shape in shapes
+        ],
+        model
+    )
 
 
 def shapes_are_adjacent(
