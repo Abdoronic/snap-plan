@@ -36,17 +36,15 @@ def create_variables(floor: Floor, model: cp_model.CpModel):
 
     create_module_variables(floor, floor.stairs, model)
     create_module_variables(floor, floor.elevator, model)
-    create_modules_variables(floor, floor.corridors, model)
+    for corridor in floor.corridors:
+        create_module_variables(floor, corridor, model)
 
     for apartment in floor.apartments:
         create_room_variables(floor, apartment, model)
-        create_modules_variables(floor, apartment.hallways, model)
-        create_modules_variables(floor, apartment.ducts, model)
-
-
-def create_modules_variables(floor: Floor, modules: List[Module], model: cp_model.CpModel):
-    for module in modules:
-        create_module_variables(floor, module, model)
+        for hallway in apartment.hallways:
+            create_module_variables(floor, hallway, model)
+        for duct in apartment.ducts:
+            create_module_variables(floor, duct, model)
 
 
 def create_module_variables(floor: Floor, module: Module, model: cp_model.CpModel):
