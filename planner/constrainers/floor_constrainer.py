@@ -1,18 +1,13 @@
-from planner.models.room_type import RoomType
 from ortools.sat.python import cp_model
 
 from planner.models.floor import Floor
-from planner.models.room import Room
-from planner.models.view import View
+from planner.models.room_type import RoomType
 from planner.constrainers.apartment_constrainer import apartment_connected_to_corridors, constrain_apartment
-from planner.constrainers.room_constrainer import constrain_room
+from planner.constrainers.room_constrainer import constrain_room, has_daylight
 from planner.constrainers.modules_constrainer import constraint_module, constraint_slim_modules
-from planner.constrainers.utils import all_shapes_adjacent_in_order, and_reify, shape_adjacent_to_any, shapes_are_adjacent
+from planner.constrainers.utils import all_shapes_adjacent_in_order, and_reify, shape_adjacent_to_any
 
 from planner.constrainers.symmetry_constrainer import constrain_symmetry_over_apartment_class
-
-from planner.constrainers.utils import or_reify, fail_reify
-from typing import List
 
 
 def constrain_floor(floor: Floor, model: cp_model.CpModel):
@@ -87,52 +82,6 @@ def constrain_sunrooms_daylight(floor: Floor, model: cp_model.CpModel):
     for room in floor.rooms:
         if room.room_type == RoomType.SUN_ROOM:
             model.Add(has_daylight(room, floor, model) == 1)
-
-
-def has_daylight(room: Room, floor: Floor, model: cp_model.CpModel):
-    return has_view_of_types(room, [v for v in View if v != View.NO_VIEW], floor, model)
-
-
-def has_landscape_view(room: Room, floor: Floor, model: cp_model.CpModel):
-    return has_view_of_types(room, [View.LANDSCAPE], floor, model)
-
-
-def has_view_of_types(room: Room, room_view_types: List[View], floor: Floor, model: cp_model.CpModel):
-
-    sides_views = floor.sides_views
-
-    zero = model.NewConstant(0)
-    width = model.NewConstant(floor.width)
-    length = model.NewConstant(floor.length)
-
-    sides_coordinates = [
-        (zero, width, length, length),
-        (zero, width, zero, zero),
-        (width, width, zero, length),
-        (zero, zero, zero, length),
-    ]
-
-    possible_sides = []
-    for i, view in enumerate(sides_views):
-        if view in room_view_types:
-            side_as_room = Room(None, 0)
-            side_as_room.variables = sides_coordinates[i]
-            possible_sides.append(side_as_room)
-
-    if len(possible_sides) == 0:
-        fail = fail_reify(model)
-        model.Add(fail == 1)
-        return
-
-    possible_side_adjacencies = list(
-        map(
-            lambda side: shapes_are_adjacent(
-                room.variables, side.variables, model),
-            possible_sides
-        )
-    )
-
-    return or_reify(possible_side_adjacencies, model)
 
 
 def constrain_stairs(floor: Floor, model: cp_model.CpModel):

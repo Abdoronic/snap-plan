@@ -8,8 +8,6 @@ from planner.models.floor import Floor
 from planner.models.apartment import Apartment
 from planner.models.module import Module
 
-from typing import List
-
 
 def plan_floor(floor: Floor):
     model = cp_model.CpModel()
