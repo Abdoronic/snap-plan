@@ -5,7 +5,8 @@ from planner.models.room_type import RoomType
 from planner.constrainers.apartment_constrainer import apartment_connected_to_corridors, constrain_apartment
 from planner.constrainers.room_constrainer import constrain_room, has_daylight
 from planner.constrainers.modules_constrainer import constraint_module, constraint_slim_modules
-from planner.constrainers.utils import all_shapes_adjacent_in_order, and_reify, shape_adjacent_to_any
+from planner.constrainers.adjacency_constrainer import all_shapes_adjacent_in_order, shape_adjacent_to_any
+from planner.constrainers.utils import and_reify
 
 from planner.constrainers.symmetry_constrainer import constrain_symmetry_over_apartment_class
 

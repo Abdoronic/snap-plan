@@ -3,7 +3,8 @@ from ortools.sat.python import cp_model
 from planner.models.floor import Floor
 from planner.models.room import Room
 from planner.models.view import View
-from planner.constrainers.utils import fail_reify, or_reify, shapes_are_adjacent
+from planner.constrainers.adjacency_constrainer import shapes_are_adjacent
+from planner.constrainers.utils import fail_reify, or_reify
 
 from typing import List
 
