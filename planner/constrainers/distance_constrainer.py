@@ -24,6 +24,6 @@ def distance_between_shapes_doubled(
     model.AddAbsEquality(abs_dy, dy)
 
     distance = model.NewIntVar(0, 2 * (floor.length + floor.length), '')
-    model.Add(distance == dx + dy)
+    model.Add(distance == abs_dx + abs_dy)
 
     return distance
