@@ -1,7 +1,7 @@
 {
     "dimensions": {
-        "width": 15,
-        "length": 15
+        "width":32,
+        "length":20
     },
     "viewQuality": {
         "north": "OPEN_AREA",
@@ -11,11 +11,12 @@
     },
     "apartments": [
         {
-            "count": 1,
+            "count": 2,
             "rooms": [
                 {
                     "roomType": "BEDROOM",
-                    "minArea": 20
+                    "minArea": 20,
+                    "adjacentTo": [1,2]
                 },
                 {
                     "roomType": "BATHROOM",
@@ -29,7 +30,7 @@
             "numberOfHallways": 1
         },
         {
-            "count": 1,
+            "count": 2,
             "rooms": [
                 {
                     "roomType": "BEDROOM",
@@ -51,7 +52,7 @@
                     "minArea": 12
                 }
             ],
-            "numberOfHallways": 2
+            "numberOfHallways": 1
         }
     ]
 }

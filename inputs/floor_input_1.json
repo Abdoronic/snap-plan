@@ -11,6 +11,7 @@
     },
     "apartments": [
         {
+            "count": 1,
             "rooms": [
                 {
                     "roomType": "BEDROOM",
@@ -20,7 +21,8 @@
                     "roomType": "BATHROOM",
                     "minArea": 10
                 }
-            ]
+            ],
+            "numberOfHallways": 1
         }
     ]
 }

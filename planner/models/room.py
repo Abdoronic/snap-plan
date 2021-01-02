@@ -6,7 +6,14 @@ from typing import List, Tuple
 
 
 class Room:
-    def __init__(self, room_type: RoomType, min_area: int, preferred_width: int = None, preferred_length: int = None, adjacent_to: List[int] = []):
+    def __init__(
+        self,
+        room_type: RoomType,
+        min_area: int,
+        preferred_width: int = None,
+        preferred_length: int = None,
+        adjacent_to: List[int] = []
+    ):
         """
         Parameters
         ----------
