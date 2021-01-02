@@ -1,7 +1,6 @@
-from planner.models.room_type import RoomType
-from ortools.sat.python import cp_model
-
 from planner.models.room import Room
+from planner.models.module import Module
+from planner.models.room_type import RoomType
 
 from typing import List, Tuple
 
@@ -25,21 +24,20 @@ class Apartment:
         self.number_of_hallways = number_of_hallways
         self.spacings = spacings
 
-        self.number_of_ducts: int = 0
+        self.number_of_ducts: int = 1
         for room in rooms:
             if room.room_type == RoomType.BATHROOM or room.room_type == RoomType.KITCHEN:
                 self.number_of_ducts += 1
         self.number_of_ducts //= 2
 
-        CpShapeVar = Tuple[
-            cp_model.IntVar,
-            cp_model.IntVar,
-            cp_model.IntVar,
-            cp_model.IntVar
+        self.ducts: List[Module] =  [
+            Module()
+            for _ in range(self.number_of_ducts)
         ]
-
-        self.ducts_variables: List[CpShapeVar] = None
-        self.hallways_variables: List[CpShapeVar] = None
+        self.hallways: List[Module] = [
+            Module()
+            for _ in range(self.number_of_hallways)
+        ]
 
 
     def __str__(self):
