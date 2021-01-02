@@ -60,17 +60,32 @@ def eq_tuple_reify(var_tuple: tuple, other_var_tuple: tuple, model: cp_model.CpM
     return and_reify(positional_equalities, model)
 
 
+def eq_var_reify(var: cp_model.IntVar, other_var: cp_model.IntVar, model: cp_model.CpModel) -> cp_model.IntVar:
+    return base_reify(
+        var == other_var,
+        var != other_var,
+        model
+    )
+
+
+def fail_reify(model: cp_model.CpModel) -> cp_model.IntVar:
+    b = model.NewBoolVar('')
+    model.Add(b == 0)
+    return b
+
+
 def all_shapes_adjacent_in_order(
     shapes: List[Tuple[cp_model.IntVar, cp_model.IntVar, cp_model.IntVar, cp_model.IntVar]],
     model: cp_model.CpModel
 ):
     return and_reify(
         [
-            shapes_are_adjacent(shapes[i], shapes[ i + 1], model)
+            shapes_are_adjacent(shapes[i], shapes[i + 1], model)
             for i in range(len(shapes) - 1)
         ],
         model
     )
+
 
 def shape_adjacent_to_any(
     target_shape: Tuple[cp_model.IntVar, cp_model.IntVar, cp_model.IntVar, cp_model.IntVar],

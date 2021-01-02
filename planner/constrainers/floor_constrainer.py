@@ -9,12 +9,16 @@ from planner.constrainers.room_constrainer import constrain_room
 from planner.constrainers.modules_constrainer import constraint_module, constraint_slim_modules
 from planner.constrainers.utils import all_shapes_adjacent_in_order, and_reify, shape_adjacent_to_any, shapes_are_adjacent
 
-from planner.constrainers.utils import or_reify
+from planner.constrainers.symmetry_constrainer import constrain_symmetry_over_apartment_class
+
+from planner.constrainers.utils import or_reify, fail_reify
 from typing import List
 
 
 def constrain_floor(floor: Floor, model: cp_model.CpModel):
     constrain_no_overlap(floor, model)
+
+    constrain_symmetry_over_apartment_class(floor, model)
 
     constrain_all_area_utilized(floor, model)
 
@@ -115,10 +119,9 @@ def has_view_of_types(room: Room, room_view_types: List[View], floor: Floor, mod
             side_as_room.variables = sides_coordinates[i]
             possible_sides.append(side_as_room)
 
-    if possible_sides.count == 0:
-        has_to_fail = model.NewBoolVar('')
-        model.Add(has_to_fail == 0)
-        model.Add(has_to_fail == 1)
+    if len(possible_sides) == 0:
+        fail = fail_reify(model)
+        model.Add(fail == 1)
         return
 
     possible_side_adjacencies = list(
