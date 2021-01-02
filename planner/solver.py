@@ -30,7 +30,7 @@ def plan_floor(floor: Floor):
 
 
 def create_variables(floor: Floor, model: cp_model.CpModel):
-    floor.score_variable = model.NewIntVar(0, 1, 'floor_score')
+    floor.score_variable = model.NewIntVar(0, 2, 'floor_score')
 
     create_module_variables(floor, floor.stairs, model)
     create_module_variables(floor, floor.elevator, model)
