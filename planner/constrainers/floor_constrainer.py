@@ -68,7 +68,7 @@ def has_view_of_types(room: Room, room_view_types: List[View], floor: Floor, mod
             side_as_room.variables = sides_coordinates[i]
             possible_sides.append(side_as_room)
 
-    if len(possible_sides):
+    if len(possible_sides) == 0:
         fail = fail_reify(model)
         model.Add(fail == 1)
         return
