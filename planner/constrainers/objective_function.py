@@ -22,6 +22,12 @@ def add_objective_function(floor: Floor, model: cp_model.CpModel):
         bathroom_is_close
     ]))
     model.Maximize(floor.score_variable)
+    return {
+      'allRoomsHaveDaylight': have_daylight,
+      'allRoomsHaveGoodSpacings': have_good_spacings,
+      'allBedroomsAreClose': bedrooms_are_close,
+      'mainBathroomIsClose': bathroom_is_close,
+    }
 
 
 def all_rooms_have_daylight(floor: Floor, model: cp_model.CpModel):
