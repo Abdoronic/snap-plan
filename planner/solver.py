@@ -8,31 +8,32 @@ from planner.models.floor import Floor
 from planner.models.apartment import Apartment
 from planner.models.module import Module
 
-from typing import List
 
-
-def plan_floor(floor: Floor):
+def plan_floor(floor: Floor, max_num_of_solutions: int = 1):
     model = cp_model.CpModel()
 
     create_variables(floor, model)
 
     constrain_floor(floor, model)
-    add_objective_function(floor, model)
+    scores = add_objective_function(floor, model)
 
     solver = cp_model.CpSolver()
     status = solver.Solve(model)
 
-    # Set the objective to a fixed value
+    # Set the objective to a fixed value to get all optimal solutions
     model.Add(floor.score_variable == round(solver.ObjectiveValue()))
     model.Proto().ClearField('objective')
 
-    solver.SearchForAllSolutions(model, SolutionHandler(floor))
+    solution_handler = SolutionHandler(floor, scores, max_num_of_solutions)
+    solver.SearchForAllSolutions(model, solution_handler)
 
-    return status, solver
+    solutions = solution_handler.get_solutions()
+
+    return status, solutions
 
 
 def create_variables(floor: Floor, model: cp_model.CpModel):
-    floor.score_variable = model.NewIntVar(0, 1, 'floor_score')
+    floor.score_variable = model.NewIntVar(0, 4, 'floor_score')
 
     create_module_variables(floor, floor.stairs, model)
     create_module_variables(floor, floor.elevator, model)

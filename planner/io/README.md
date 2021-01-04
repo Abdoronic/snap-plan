@@ -179,3 +179,10 @@ The following, explains what each attribute represents:
   ]
 }
 ```
+
+## Output Format
+
+Example output can be seen in `test_bench.ipynb` and `test_bench_results.pdf`.
+
+Each room is labeled in the following form:
+`<First four characters of the room type> #(<Apartment Number>, <Room Number>)`.

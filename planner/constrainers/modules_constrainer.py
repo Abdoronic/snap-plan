@@ -1,7 +1,7 @@
-from planner.constrainers.utils import base_reify, or_reify
 from ortools.sat.python import cp_model
 
 from planner.models.module import Module
+from planner.constrainers.utils import base_reify, or_reify
 
 from typing import List
 

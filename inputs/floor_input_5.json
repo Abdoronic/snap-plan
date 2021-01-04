@@ -1,0 +1,37 @@
+{
+    "dimensions": {
+        "width": 20,
+        "length": 20
+    },
+    "viewQuality": {
+        "north": "OPEN_AREA",
+        "west": "NO_VIEW",
+        "south": "OPEN_AREA",
+        "east": "LANDSCAPE"
+    },
+    "apartments": [
+        {
+            "count": 2,
+            "rooms": [
+                {
+                    "roomType": "BEDROOM",
+                    "minArea": 20
+                },
+                {
+                    "roomType": "BATHROOM",
+                    "minArea": 10
+                }
+            ],
+            "roomSpacings": [
+                [0, 1, "gt", 10]
+            ],
+            "numberOfHallways": 1
+        }
+    ],
+    "optionalConstraints": {
+        "allLandscape": true,
+        "allNearElevator": true,
+        "symmetry": true,
+        "goldenRatio": false
+    }
+}

@@ -5,7 +5,8 @@ from planner.models.apartment import Apartment
 from planner.models.module import Module
 from planner.models.room_type import RoomType
 from planner.constrainers.modules_constrainer import constraint_module, constraint_slim_modules
-from planner.constrainers.utils import all_shapes_adjacent_in_order, and_reify, or_reify, shape_adjacent_to_any, shapes_are_adjacent
+from planner.constrainers.adjacency_constrainer import all_shapes_adjacent_in_order, shape_adjacent_to_any, shapes_are_adjacent
+from planner.constrainers.utils import and_reify, or_reify
 
 from typing import List
 

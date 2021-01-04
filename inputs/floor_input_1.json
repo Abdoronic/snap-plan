@@ -11,7 +11,7 @@
     },
     "apartments": [
         {
-            "count": 1,
+            "count": 2,
             "rooms": [
                 {
                     "roomType": "BEDROOM",
@@ -24,5 +24,11 @@
             ],
             "numberOfHallways": 1
         }
-    ]
+    ],
+    "optionalConstraints": {
+        "allLandscape": true,
+        "allNearElevator": true,
+        "symmetry": true,
+        "goldenRatio": false
+    }
 }

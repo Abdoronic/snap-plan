@@ -26,10 +26,12 @@ def parse_floor(path):
 def json_to_floor(floor_json):
     width = floor_json['dimensions']['width']
     length = floor_json['dimensions']['length']
-    sides_views = tuple(map(parse_view,
-                            tuple([floor_json['viewQuality'][key]
-                                   for key in ['north', 'south', 'east', 'west']])
-                            ))
+    sides_views = (
+        parse_view(floor_json['viewQuality']['north']),
+        parse_view(floor_json['viewQuality']['south']),
+        parse_view(floor_json['viewQuality']['east']),
+        parse_view(floor_json['viewQuality']['west'])
+    )
 
     apartments_json = floor_json['apartments']
     apartments_nested = [
