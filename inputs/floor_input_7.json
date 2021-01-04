@@ -1,7 +1,7 @@
 {
     "dimensions": {
-        "width": 8,
-        "length": 10
+        "width": 12,
+        "length": 12
     },
     "viewQuality": {
         "north": "OPEN_AREA",
@@ -15,20 +15,20 @@
             "rooms": [
                 {
                     "roomType": "BEDROOM",
-                    "minArea": 20
+                    "minArea": 40
                 },
                 {
                     "roomType": "BATHROOM",
-                    "minArea": 10
+                    "minArea": 15
                 }
             ],
-            "numberOfHallways": 1
+            "numberOfHallways": 2
         }
     ],
     "optionalConstraints": {
         "allLandscape": true,
         "allNearElevator": true,
         "symmetry": true,
-        "goldenRatio": false
+        "goldenRatio": true
     }
 }
