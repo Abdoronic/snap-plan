@@ -8,9 +8,14 @@ from planner.constrainers.utils import and_reify, base_reify, or_reify
 
 
 def constrain_optional_constraints(floor: Floor, model: cp_model.CpModel):
-    constrain_symmetry_over_apartment_class(floor, model)
-    constrain_apartments_have_landscape(floor, model)
-    constrain_apartments_equidistant_to_elevator(floor, model)
+    if floor.has_symmetry_constraint:
+        constrain_symmetry_over_apartment_class(floor, model)
+    if floor.has_all_landscape_constraint:
+        constrain_apartments_have_landscape(floor, model)
+    if floor.has_all_near_elevator_constraint:
+        constrain_apartments_equidistant_to_elevator(floor, model)
+    if floor.has_golden_ratio_constraint:
+        constrain_golden_ratio(floor, model)
 
 
 def constrain_apartments_have_landscape(floor: Floor, model: cp_model.CpModel):
@@ -51,7 +56,8 @@ def constrain_apartments_equidistant_to_elevator(floor: Floor, model: cp_model.C
         model.AddMinEquality(min_distances[i], apartments_distances[i])
 
     differences = [
-        model.NewIntVar(-2 * (floor.width + floor.length), 2 * (floor.width + floor.length), '')
+        model.NewIntVar(-2 * (floor.width + floor.length),
+                        2 * (floor.width + floor.length), '')
         for _ in range(len(floor.apartments) - 1)
     ]
     for i in range(len(floor.apartments) - 1):
@@ -77,3 +83,41 @@ def constrain_apartments_equidistant_to_elevator(floor: Floor, model: cp_model.C
         model
     )
     model.Add(apartments_equidistant == 1)
+
+
+def constrain_golden_ratio(floor: Floor, model: cp_model.CpModel):
+    for room in floor.rooms:
+        width = room.width_variable
+        length = room.length_variable
+        golden_ratio = or_reify(
+            [
+                is_golden_ratio(width, length, model),
+                is_golden_ratio(length, width, model)
+            ],
+            model
+        )
+        model.Add(golden_ratio == 1)
+
+
+def is_golden_ratio(a: cp_model.IntervalVar, b: cp_model.IntVar, model: cp_model.CpModel):
+    """
+    Reifies the relation:
+    (0.1 * golden_ratio_lb <= a / b <= 0.1 * golden_ratio_ub)
+    """
+    golden_ratio_lb = 16
+    golden_ratio_ub = 17
+    return and_reify(
+        [
+            base_reify(
+                10 * a <= golden_ratio_ub * b,
+                10 * a > golden_ratio_ub * b,
+                model
+            ),
+            base_reify(
+                10 * a >= golden_ratio_lb * b,
+                10 * a < golden_ratio_lb * b,
+                model
+            ),
+        ],
+        model
+    )
