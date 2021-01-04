@@ -11,7 +11,7 @@ def main():
 
     start_time = time.time()
 
-    floor = parse_floor('inputs/floor_input_6.json')
+    floor = parse_floor('inputs/floor_input_7.json')
     after_parse_time = time.time()
     print('Parsed in ' + str(after_parse_time - start_time) + ' seconds')
 

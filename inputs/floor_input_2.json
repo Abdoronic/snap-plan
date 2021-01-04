@@ -53,5 +53,11 @@
             ],
             "numberOfHallways": 2
         }
-    ]
+    ],
+    "optionalConstraints": {
+        "allLandscape": false,
+        "allNearElevator": false,
+        "symmetry": false,
+        "goldenRatio": false
+    }
 }
