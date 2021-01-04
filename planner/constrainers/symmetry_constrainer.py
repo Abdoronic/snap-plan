@@ -65,12 +65,9 @@ def are_reflected_in_direction(
     floor: Floor,
     model: cp_model.CpModel
 ) -> cp_model.IntVar:
-    # Let's start with vertical axis case
-
     needed_constraints = []
 
     for i in range(len(first_apartment.rooms)):
-        # Every room is at same y as its corresponding room
         first_room: Room = first_apartment.rooms[i]
         second_room: Room = second_apartment.rooms[i]
         for j in range(2 * direction, 2 * direction + 2):
@@ -81,7 +78,6 @@ def are_reflected_in_direction(
             )
             needed_constraints.append(have_equal_coordinate)
 
-            # All rooms are equidistant on central x-axis
         for j in range(2 * (1 - direction), 2 * (1 - direction) + 2):
             floor_side = (floor.length, floor.width)[direction]
             add_up_to_floor_side = eq_var_reify(
