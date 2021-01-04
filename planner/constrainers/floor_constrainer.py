@@ -6,15 +6,14 @@ from planner.constrainers.apartment_constrainer import apartment_connected_to_co
 from planner.constrainers.room_constrainer import constrain_room, has_daylight
 from planner.constrainers.modules_constrainer import constraint_module, constraint_slim_modules
 from planner.constrainers.adjacency_constrainer import all_shapes_adjacent_in_order, shape_adjacent_to_any
+from planner.constrainers.optional_constrainer import constrain_optional_constraints
 from planner.constrainers.utils import and_reify
-
-from planner.constrainers.symmetry_constrainer import constrain_symmetry_over_apartment_class
 
 
 def constrain_floor(floor: Floor, model: cp_model.CpModel):
     constrain_no_overlap(floor, model)
 
-    constrain_symmetry_over_apartment_class(floor, model)
+    constrain_optional_constraints(floor, model)
 
     constrain_all_area_utilized(floor, model)
 
