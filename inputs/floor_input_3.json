@@ -11,7 +11,7 @@
     },
     "apartments": [
         {
-            "count": 1,
+            "count": 2,
             "rooms": [
                 {
                     "roomType": "BEDROOM",
@@ -24,41 +24,15 @@
                 {
                     "roomType": "KITCHEN",
                     "minArea": 15
-                },
-                {
-                    "roomType": "DINING_ROOM",
-                    "minArea": 12
                 }
             ],
             "numberOfHallways": 1
-        },
-        {
-            "count": 1,
-            "rooms": [
-                {
-                    "roomType": "BEDROOM",
-                    "minArea": 20
-                },
-                {
-                    "roomType": "SUN_ROOM",
-                    "minArea": 12
-                },
-                {
-                    "roomType": "BATHROOM",
-                    "minArea": 10
-                },
-                {
-                    "roomType": "KITCHEN",
-                    "minArea": 12
-                }
-            ],
-            "numberOfHallways": 2
         }
     ],
     "optionalConstraints": {
         "allLandscape": false,
         "allNearElevator": false,
-        "symmetry": false,
+        "symmetry": true,
         "goldenRatio": false
     }
 }
