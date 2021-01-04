@@ -107,8 +107,8 @@ def all_bedrooms_are_close_in_apartment(
             )
             distances_less_than_delta.append(
                 base_reify(
-                    dist < delta,
-                    dist >= delta,
+                    dist < 2 * delta,
+                    dist >= 2 * delta,
                     model
                 )
             )
@@ -176,8 +176,8 @@ def main_bathroom_is_close_in_apartment(
 
         distances_less_than_delta.append(
             base_reify(
-                dist < delta,
-                dist >= delta,
+                dist < 2 * delta,
+                dist >= 2 * delta,
                 model
             )
         )
