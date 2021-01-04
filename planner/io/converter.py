@@ -4,13 +4,20 @@ from ortools.sat.python import cp_model
 from planner.models.floor import Floor
 from planner.models.apartment import Apartment
 
+from typing import Dict
 
-def get_floor_plan(floor: Floor, solver: cp_model.CpSolver):
+
+def get_floor_plan(floor: Floor, scores: Dict, solver: cp_model.CpSolver):
     plan = {}
+
+    plan['scores'] = {}
+    for key, item in scores.items():
+        plan['scores'][key] = solver.Value(item) == 1
+
     plan['width'] = floor.width
     plan['length'] = floor.length
 
-    plan['stairs'] = get_module_plan(floor.elevator, solver)
+    plan['stairs'] = get_module_plan(floor.stairs, solver)
     plan['elevator'] = get_module_plan(floor.elevator, solver)
 
     plan['apartments'] = []
@@ -25,6 +32,7 @@ def get_floor_plan(floor: Floor, solver: cp_model.CpSolver):
             get_module_plan(corridor, solver)
         )
 
+    return plan
 
 def get_apartment_plan(apartment: Apartment, solver: cp_model.CpSolver):
     plan = {}
