@@ -58,9 +58,9 @@ def constrain_apartments_equidistant_to_elevator(floor: Floor, model: cp_model.C
     differences = [
         model.NewIntVar(-2 * (floor.width + floor.length),
                         2 * (floor.width + floor.length), '')
-        for _ in range(len(floor.apartments) - 1)
+        for _ in range(len(floor.apartments))
     ]
-    for i in range(len(floor.apartments)):
+    for i in range(len(differences)):
         model.Add(differences[i] == min_distances[i] - min_distances[0])
 
     abs_differences = [
