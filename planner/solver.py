@@ -8,8 +8,6 @@ from planner.models.floor import Floor
 from planner.models.apartment import Apartment
 from planner.models.module import Module
 
-from typing import List
-
 
 def plan_floor(floor: Floor):
     model = cp_model.CpModel()
@@ -32,7 +30,7 @@ def plan_floor(floor: Floor):
 
 
 def create_variables(floor: Floor, model: cp_model.CpModel):
-    floor.score_variable = model.NewIntVar(0, 1, 'floor_score')
+    floor.score_variable = model.NewIntVar(0, 4, 'floor_score')
 
     create_module_variables(floor, floor.stairs, model)
     create_module_variables(floor, floor.elevator, model)

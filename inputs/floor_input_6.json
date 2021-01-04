@@ -1,7 +1,7 @@
 {
     "dimensions": {
-        "width": 8,
-        "length": 10
+        "width": 20,
+        "length": 20
     },
     "viewQuality": {
         "north": "OPEN_AREA",
@@ -21,6 +21,9 @@
                     "roomType": "BATHROOM",
                     "minArea": 10
                 }
+            ],
+            "roomSpacings": [
+                [0, 1, "gt", 10]
             ],
             "numberOfHallways": 1
         }
