@@ -11,6 +11,8 @@ def visualize_floor(floor: Floor, solver: cp_model.CpSolver):
     fig.update_xaxes(range=[0, floor.width])
     fig.update_yaxes(range=[0, floor.length])
     fig.update_layout(
+        width=(50*floor.width),
+        height=(50*floor.length),
         xaxis=dict(
             tickmode='linear',
             tick0=0,
