@@ -13,12 +13,12 @@ def distance_between_shapes_doubled(
     """ 
     Returns double the manhatten distance between the two center points of two rectangles.
     """
-    dx = model.NewIntVar(-floor.width, floor.width, '')
+    dx = model.NewIntVar(-2 * floor.width, 2 * floor.width, '')
     model.Add(dx == (a[0] + a[1]) - (b[0] + b[1]))
     abs_dx = model.NewIntVar(0, 2 * floor.width, '')
     model.AddAbsEquality(abs_dx, dx)
 
-    dy = model.NewIntVar(-floor.length, floor.length, '')
+    dy = model.NewIntVar(-2 * floor.length, 2 * floor.length, '')
     model.Add(dy == (a[2] + a[3]) - (b[2] + b[3]))
     abs_dy = model.NewIntVar(0, 2 * floor.length, '')
     model.AddAbsEquality(abs_dy, dy)
