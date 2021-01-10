@@ -2,7 +2,7 @@
 
 ## Dependencies
 
-(Flask)[https://flask.palletsprojects.com/en/1.1.x/] is needed to run the web server.
+[Flask](https://flask.palletsprojects.com/en/1.1.x/) is needed to run the web server.
 
 ## Build and Run
 
