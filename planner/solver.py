@@ -2,6 +2,7 @@ from ortools.sat.python import cp_model
 
 from planner.constrainers.floor_constrainer import constrain_floor
 from planner.constrainers.objective_function import add_objective_function
+from planner.io.converter import get_floor_plan
 from planner.solution_handler import SolutionHandler
 
 from planner.models.floor import Floor
@@ -19,6 +20,9 @@ def plan_floor(floor: Floor, max_num_of_solutions: int = 1):
 
     solver = cp_model.CpSolver()
     status = solver.Solve(model)
+
+    if max_num_of_solutions == 1:
+        return status, [get_floor_plan(floor, scores, solver)]
 
     # Set the objective to a fixed value to get all optimal solutions
     model.Add(floor.score_variable == round(solver.ObjectiveValue()))
