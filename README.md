@@ -2,6 +2,8 @@
 
 A Residential buildings functional plan designer.
 
+![Example generated floor layout](https://i.imgur.com/CVj0aji.png)
+
 ## Build and Run
 
 Snap Plan requires [Python](https://www.python.org/) and [OR-Tools](https://developers.google.com/optimization) to run.
